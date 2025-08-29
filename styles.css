@@ -9,7 +9,6 @@
 * {
     background-color: lightblue;
     font-family: "Nunito Sans", system-ui;
-    text-transform: uppercase;
     font-size: 20px;
 }
 
@@ -26,7 +25,8 @@
     z-index: 999;
   }
 
-#popupContainer h2, p {
+#popupContainer h2, 
+#popupContainer p {
     background-color: white;
 }
   
@@ -88,4 +88,12 @@ body {
 
 footer p {
     background-color: lightblue;
+}
+
+.bomb-counter-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
