@@ -151,24 +151,35 @@ export class Map {
 
   cellClicked(x, y) {
     if (!this.game.started) {
-      // Start Game
-      this.game.start(x, y);
+        this.game.start(x, y);
     }
 
     // Don't do anything if there is a flag
     if (this.getCell(x, y, 2) === 1) {
-      return;
+        return;
+    }
+
+    // If clicked on a bomb → lose
+    if (this.getCell(x, y, 1) === 1) {
+        this.setCell(x, y, 3, 0); // uncover bomb
+        this.game.finish("lose");
+        return false;
     }
 
     // Uncover tile
     if (this.getCell(x, y, 3) === 1) {
-      // TODO: Flood algorithm to uncover neighboring blank cells.
-      this.floodFill(x, y);
-      return true;
-    } else {
-      return false;
+        this.floodFill(x, y);
+
+        // Check win after uncover
+        if (this.checkWin()) {
+            this.game.finish("win");
+        }
+        return true;
     }
-  }
+    return false;
+}
+
+
 
   cellRightClicked(x, y) {
     // Place flag on covered tiles
@@ -231,4 +242,16 @@ export class Map {
     }
     return;
   }
+
+  checkWin() {
+    for (let y = 0; y < this.h; y++) {
+        for (let x = 0; x < this.w; x++) {
+            if (this.getCell(x, y, 1) === 0 && this.getCell(x, y, 3) === 1) {
+                return false; // still covered non-bomb
+            }
+        }
+    }
+    return true;
+}
+
 }
