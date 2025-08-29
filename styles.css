@@ -1,4 +1,30 @@
 * {
     background-color: lightgray;
-    border: 3px solid black;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    height: 100vh;
+    width: 100vw;
+}
+
+.minesweeper-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 38px);
+    grid-template-rows: repeat(8, 38px);
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.grid-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid black;
+    background-color: white;
+    cursor: pointer;
 }
