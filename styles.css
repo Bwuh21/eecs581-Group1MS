@@ -70,15 +70,15 @@ body {
 
 .minesweeper-grid {
     display: grid;
-    grid-template-columns: repeat(8, 38px);
-    grid-template-rows: repeat(8, 38px);
+    grid-template-columns: repeat(8, 58px);
+    grid-template-rows: repeat(8, 58px);
     justify-content: center;
     margin-top: 20px;
 }
 
 .grid-btn {
-    width: 36px;
-    height: 36px;
+    width: 56px;
+    height: 56px;
     font-size: 18px;
     font-weight: bold;
     border: 2px solid black;
