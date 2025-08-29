@@ -61,7 +61,7 @@ body {
   justify-content: center;   /* center horizontally */
   align-items: center;       /* center vertically */
   flex-direction: column;    /* stack elements */
-  overflow: hidden;
+  overflow: auto;
   text-align: center;
   background: #f8f8f8; 
 }
