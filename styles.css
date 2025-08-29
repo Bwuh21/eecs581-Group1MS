@@ -9,7 +9,6 @@
 * {
     background-color: lightblue;
     font-family: "Nunito Sans", system-ui;
-    text-transform: uppercase;
     font-size: 20px;
 }
 
@@ -26,7 +25,8 @@
     z-index: 999;
   }
 
-#popupContainer h2, p {
+#popupContainer h2, 
+#popupContainer p {
     background-color: white;
 }
   
@@ -70,15 +70,15 @@ body {
 
 .minesweeper-grid {
     display: grid;
-    grid-template-columns: repeat(8, 38px);
-    grid-template-rows: repeat(8, 38px);
+    grid-template-columns: repeat(8, 58px);
+    grid-template-rows: repeat(8, 58px);
     justify-content: center;
     margin-top: 20px;
 }
 
 .grid-btn {
-    width: 36px;
-    height: 36px;
+    width: 56px;
+    height: 56px;
     font-size: 18px;
     font-weight: bold;
     border: 2px solid black;
@@ -92,4 +92,12 @@ footer p {
 
 .grid-btn:disabled {
     cursor: default;
+}
+
+.bomb-counter-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
