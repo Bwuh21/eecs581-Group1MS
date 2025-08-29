@@ -7,7 +7,10 @@ class Game {
 
 	}
 
-	fisih () {
-		
+	finish () {
+
 	}
 }
+
+GAME = new Game();
+GAME.start();
