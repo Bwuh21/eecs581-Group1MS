@@ -20,6 +20,10 @@
     display: none; /* hidden by default */
     z-index: 999;
   }
+
+#popupContainer h2, p {
+    background-color: white;
+}
   
   /* Popup box */
   #popupContainer {
@@ -75,4 +79,8 @@ body {
     border: 2px solid black;
     background-color: white;
     cursor: pointer;
+}
+
+footer p {
+    background-color: none;
 }
