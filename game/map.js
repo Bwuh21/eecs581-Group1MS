@@ -26,13 +26,25 @@ export class Map {
 	) {
 		// Generate random number of bombs
 		let count = 0;
+
+		// Mark forbidden cells.
+		// Bombs shouldn't spawn near or adjacent to where the user clicked
+		const forbidden = new Set()
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+				const x = startX + dx;
+				const y = startY + dy;
+                if (this.inMap(x, y)) forbidden.add(`${x},${y}`);
+            }
+        }
+
 		while (count < bombCount) {
 			const x = Math.floor(Math.random() * this.w);
 			const y = Math.floor(Math.random() * this.h);
 			
 			// Don't spawn where user clicked
-			// TODO: Fix, this doesn't work.
-			if (x === startX && y === startY) continue;
+            if (forbidden.has(`${x},${y}`)) continue;
+
 			// Generate new coordinate if bomb is already there
 			if (this.getCell(x, y, 1) === 1) continue;
 
@@ -177,8 +189,53 @@ export class Map {
 		startX,
 		startY,
 	) {
-		// TODO
-		this.setCell(startX, startY, 3, 0)
+		const empty = this.getCell(startX, startY, 0) === 0;
+		// Clear first cell
+		this.setCell(startX, startY, 3, 0);
+
+		// If empty, look for neighboring empty tiles.
+		if (empty) {
+			const visited = [];
+			for (let y = 0; y < this.h; y++) {
+				visited[y] = [];
+				for (let x = 0; x < this.w; x++) {
+					// [Visual Number (Surrounding bombs), Bomb, Flag?, Covered?]
+					visited[y][x] = false;
+				}
+			}
+
+			this._flood(startX, startY, visited);
+		}
 	}
 	
+	_flood(
+		x, y, visited
+	) {
+		// Clear cell and mark it as visited
+		this.setCell(x, y, 3, 0);
+		visited[y][x] = true;
+
+		if (this.getCell(x, y, 0) !== 0) {
+			// Stop searching if not emptry
+			return;
+		}
+
+		// Up
+		if (this.inMap(x, y-1) && !visited[y-1][x]) {
+			this._flood(x, y-1, visited);
+		}
+		// Left
+		if (this.inMap(x-1, y) && !visited[y][x-1]) {
+			this._flood(x-1, y, visited);
+		}
+		// Down
+		if (this.inMap(x, y+1) && !visited[y+1][x]) {
+			this._flood(x, y+1, visited);
+		}
+		// Right
+		if (this.inMap(x+1, y) && !visited[y][x+1]) {
+			this._flood(x+1, y, visited);
+		}
+		return;
+	}
 }

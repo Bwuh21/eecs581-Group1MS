@@ -15,9 +15,7 @@ window.onload = function() {
   
 class Game {
 	constructor () {
-		this.started = true;
-		
-		this.initialize();
+		this.started = false;
 	}
 
 	/*
@@ -26,7 +24,7 @@ class Game {
 	initialize(
 		width = 8,
 		height = 8,
-		bombs = 16,
+		bombs = 8,
 	) {
 		this.bombs = bombs;
 		this.map = new Map(width, height, this);
@@ -61,6 +59,7 @@ class Game {
 		this.started = true;
 
 		this.map.generateBombs(this.bombs, startX, startY);
+		this.map.updateMap();
 	}
 
 	finish () {
@@ -69,4 +68,4 @@ class Game {
 }
 
 const GAME = new Game();
-GAME.start();
+GAME.initialize();
