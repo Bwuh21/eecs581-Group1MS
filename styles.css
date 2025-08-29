@@ -131,3 +131,21 @@ body {
   pointer-events: auto; /* allow dragging on images */
 }
 
+.status-indicator {
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status-indicator.playing {
+  color: black;
+}
+
+.status-indicator.won {
+  color: green;
+}
+
+.status-indicator.lost {
+  color: red;
+}

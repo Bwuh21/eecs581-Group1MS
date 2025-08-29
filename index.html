@@ -27,21 +27,26 @@
 
 	<div class="content">
 		<div class="settings">
-		<h2>Game Settings</h2>
-		<label>
-			Width:
-			<input type="number" id="grid-width" value="8" min="5" max="30">
-		</label>
-		<label>
-			Height:
-			<input type="number" id="grid-height" value="8" min="5" max="30">
-		</label>
-		<label>
-			Mines:
-			<input type="number" id="bomb-count" value="10" min="1">
-		</label>
-		<button id="start-game">Start Game</button>
-	</div>
+			<h2>Game Settings</h2>
+			<label>
+				Width:
+				<input type="number" id="grid-width" value="8" min="5" max="30">
+			</label>
+			<label>
+				Height:
+				<input type="number" id="grid-height" value="8" min="5" max="30">
+			</label>
+			<label>
+				Mines:
+				<input type="number" id="bomb-count" value="10" min="1">
+			</label>
+			<button id="start-game">Start Game</button>
+		</div>
+
+		<div class="status-indicator" id="status-indicator">
+			Game in progress...
+		</div>
+
 
 		<div class="flag-counter-container">
 			<p>⚑</p>
@@ -76,6 +81,13 @@
 				img.style.cursor = 'grab';
 			});
 		});
+
+		function setStatus(message, statusClass) {
+			const indicator = document.getElementById("status-indicator");
+			indicator.textContent = message;
+			indicator.className = "status-indicator " + statusClass;
+		}
+
 	</script>
 
 
