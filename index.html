@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Minesweeper</title>
 	<link rel="stylesheet" href="styles.css">
+
 <body>
-	<div id="minesweeper-grid">
+	<!-- Overlay and popup -->
+	<div id="popupOverlay"></div>
+	<div id="popupContainer">
+	  <h2>Welcome!</h2>
+	  <p>PLAY OR DIE.</p>
+	  <button id="closePopup">begin</button>
+	</div>
+  
+	<div class="minesweeper-grid">
 		<button class="grid-btn" id="cell-0-0"></button>
 		<button class="grid-btn" id="cell-0-1"></button>
 		<button class="grid-btn" id="cell-0-2"></button>
@@ -75,4 +85,10 @@
 	<script type="module" src="game/game.js"></script>
 	</grid>
 </body>
+
+<footer>
+	<p style="text-align: center;">EECS 581 - Fall 2025 - University of Kansas</p>
+
+</footer>
+
 </html>
