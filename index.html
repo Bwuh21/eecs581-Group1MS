@@ -6,6 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Minesweeper</title>
 	<link rel="stylesheet" href="styles.css">
+	<link rel="icon" type="image/goodbye-kitty.png" href="/images/goodbye-kitty.png">
+
 
 <body>
 	<!-- Overlay and popup -->
@@ -15,15 +17,68 @@
 	  <p>PLAY OR DIE.</p>
 	  <button id="closePopup">begin</button>
 	</div> -->
-
-	<div class="bomb-counter-container">
-		<p>Bomb Counter</p>
-		<input type="text" id="bomb-counter" value="10" placeholder="Bombs">
-
+	<div class="background-images">
+		<img src="images/goodbye-kitty.png" alt="goodbye kitty Logo" class="draggable"
+			style="width:150px; top:10px; left:30px;">
+		<img src="images/tomater.png" alt="tomater" class="draggable" style="width:150px; top:620px; left:300px;">
 	</div>
-  
-	<div class="minesweeper-grid" id="minesweeper-grid"></div>
-	<script type="module" src="game/game.js"></script>
+
+
+
+	<div class="content">
+		<div class="settings">
+		<h2>Game Settings</h2>
+		<label>
+			Width:
+			<input type="number" id="grid-width" value="8" min="5" max="30">
+		</label>
+		<label>
+			Height:
+			<input type="number" id="grid-height" value="8" min="5" max="30">
+		</label>
+		<label>
+			Bombs:
+			<input type="number" id="bomb-count" value="10" min="1">
+		</label>
+		<button id="start-game">Start Game</button>
+	</div>
+
+		<div class="flag-counter-container">
+			<p>⚑</p>
+			<input type="text" id="flag-counter" value="10" placeholder="Bombs" readonly>
+
+		</div>
+
+		<div class="minesweeper-grid" id="minesweeper-grid"></div>
+		<script type="module" src="game/game.js"></script>
+	</div>
+
+	<script>
+		document.querySelectorAll('.draggable').forEach(img => {
+			let offsetX, offsetY, isDragging = false;
+
+			img.addEventListener('mousedown', e => {
+				isDragging = true;
+				offsetX = e.clientX - img.offsetLeft;
+				offsetY = e.clientY - img.offsetTop;
+				img.style.cursor = 'grabbing';
+			});
+
+			document.addEventListener('mousemove', e => {
+				if (isDragging) {
+					img.style.left = (e.clientX - offsetX) + 'px';
+					img.style.top = (e.clientY - offsetY) + 'px';
+				}
+			});
+
+			document.addEventListener('mouseup', () => {
+				isDragging = false;
+				img.style.cursor = 'grab';
+			});
+		});
+	</script>
+
+
 </body>
 
 <footer>

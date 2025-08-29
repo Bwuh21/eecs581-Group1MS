@@ -1,14 +1,8 @@
-/* * {
-	background-color: lightgray;
-	border: 3px solid black;
-} */
-
-@import url('https://fonts.googleapis.com/css2?family=Libertinus+Keyboard&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&family=Libertinus+Keyboard&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 
 
 * {
-    background-color: lightblue;
-    font-family: "Nunito Sans", system-ui;
+    font-family: "Kode Mono", monospace;
     font-size: 20px;
 }
 
@@ -59,45 +53,81 @@
   }
   
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 20px;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  align-items: center;       /* center vertically */
+  flex-direction: column;    /* stack elements */
+  overflow: auto;
+  text-align: center;
+  background: #f8f8f8; 
 }
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 
 .minesweeper-grid {
     display: grid;
     grid-template-columns: repeat(8, 58px);
     grid-template-rows: repeat(8, 58px);
     justify-content: center;
-    margin-top: 20px;
 }
 
 .grid-btn {
     width: 56px;
     height: 56px;
-    font-size: 18px;
+    font-size: 25px;
     font-weight: bold;
     border: 2px solid black;
     background-color: white;
     cursor: pointer;
 }
 
-footer p {
-    background-color: lightblue;
-}
 
 .grid-btn:disabled {
     cursor: default;
 }
 
-.bomb-counter-container {
-    margin-top: 20px;
+.flag-counter-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
 }
+
+.flag-counter-container input {
+    width: 50px;
+    padding: 5px;
+    font-size: 18px;
+    text-align: center;
+    border: none;
+    font-weight: bold;
+}
+
+.flag-counter-container p {
+    font-size: 30px;
+    color: red;
+}
+
+.background-images {
+  position: fixed; /* cover whole screen */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* let clicks pass through by default */
+}
+
+.draggable {
+  position: absolute;
+  cursor: grab;
+  pointer-events: auto; /* allow dragging on images */
+}
+
