@@ -89,3 +89,7 @@ body {
 footer p {
     background-color: lightblue;
 }
+
+.grid-btn:disabled {
+    cursor: default;
+}

@@ -41,14 +41,20 @@ class Game {
 				const btn = document.createElement("button");
 				btn.className = "grid-btn";
 				btn.id = `cell-${x}-${y}`;
-				// Add click listener
+				// Add click listeners
 				btn.addEventListener("click", () => {
 					this.map.cellClicked(x, y);
+				});
+				btn.addEventListener("contextmenu", (e) => {
+					e.preventDefault();
+					this.map.cellRightClicked(x, y);
 				});
 				grid.appendChild(btn);
 
 			}
 		}
+
+		this.map.updateMap();
 	}
 
 	start (startX, startY) {

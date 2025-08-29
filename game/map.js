@@ -6,18 +6,17 @@ export class Map {
 	) {
 		this.w = width;
 		this.h = height;
+		this.game = game;
 
 		// Create grid
 		this.grid = [];
-		for (let y = 0; y < height; y++) {
+		for (let y = 0; y < this.h; y++) {
 			this.grid[y] = [];
-			for (let x = 0; x < width; x++) {
-				// [Visual Number (Surrounding bombs), Bomb, Flag, Covered]
-				this.grid[y][x] = [0, 0, 0, 0];
+			for (let x = 0; x < this.w; x++) {
+				// [Visual Number (Surrounding bombs), Bomb, Flag?, Covered?]
+				this.grid[y][x] = [0, 0, 0, 1];
 			}
 		}
-
-		this.game = game;
 	}
 
 	generateBombs(
@@ -32,6 +31,7 @@ export class Map {
 			const y = Math.floor(Math.random() * this.h);
 			
 			// Don't spawn where user clicked
+			// TODO: Fix, this doesn't work.
 			if (x === startX && y === startY) continue;
 			// Generate new coordinate if bomb is already there
 			if (this.getCell(x, y, 1) === 1) continue;
@@ -62,13 +62,58 @@ export class Map {
 	) {
 		if (!this.inMap(x,y)) return;
 		this.grid[y][x][i] = v;
+		
+		this.updateCell(x, y);
+	}
 
-		const btn = document.getElementById(`cell-${x}-${y}`);
-		if (!btn) return;
-
-		if (i == 0) {
-			btn.textContent = v;
+	updateMap(
+		x,
+		y,
+	) {
+		for (let y = 0; y < this.h; y++) {
+			for (let x = 0; x < this.w; x++) {
+				this.updateCell(x, y);
+			}
 		}
+	}
+
+	updateCell(
+		x,
+		y,
+	) {
+		const btn = document.getElementById(`cell-${x}-${y}`);
+		if (!btn) {
+			console.warn(`No cell at (${x}, ${y})`)
+			return;
+		}
+
+		// Flag
+		if (this.getCell(x, y, 2) === 1) {
+			btn.textContent = "🚩";
+			return;
+		}
+
+		// Covered?
+		if (this.getCell(x, y, 3) === 1) {
+			btn.textContent = "⬛";
+			return;
+		}
+
+		// Bomb?
+		if (this.getCell(x, y, 1) === 1) {
+			btn.textContent = "💣";
+			return;
+		}
+
+		const number = this.getCell(x, y, 0);
+		if (number > 0) {
+			btn.textContent = number;
+		} else {
+			btn.textContent = "";
+		}
+
+		// Uncovered, disable.
+		btn.disabled = true;
 	}
 
 	getCell (
@@ -95,7 +140,45 @@ export class Map {
 		if (!this.game.started) {
 			// Start Game
 			this.game.start(x, y);
+		}
+
+		// Don't do anything if there is a flag
+		if (this.getCell(x, y, 2) === 1) {
 			return;
 		}
+
+		// Uncover tile
+		if (this.getCell(x, y, 3) === 1) {
+			// TODO: Flood algorithm to uncover neighboring blank cells.
+			this.floodFill(x, y)
+			return true;
+		} else {
+			return false;
+		}
 	}
+
+	cellRightClicked (
+		x,
+		y,
+	) {
+		// Place flag on covered tiles
+		if (this.getCell(x, y, 3) === 1) {
+			if (this.getCell(x, y, 2) === 0) {
+				// Place
+				this.setCell(x, y, 2, 1);
+			} else {
+				// Remove
+				this.setCell(x, y, 2, 0);
+			}
+		}
+	}
+
+	floodFill(
+		startX,
+		startY,
+	) {
+		// TODO
+		this.setCell(startX, startY, 3, 0)
+	}
+	
 }
