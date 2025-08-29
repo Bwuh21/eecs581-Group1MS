@@ -1,13 +1,8 @@
-/* * {
-	background-color: lightgray;
-	border: 3px solid black;
-} */
-
-@import url('https://fonts.googleapis.com/css2?family=Libertinus+Keyboard&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&family=Libertinus+Keyboard&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 
 
 * {
-    font-family: "Nunito Sans", system-ui;
+    font-family: "Kode Mono", monospace;
     font-size: 20px;
 }
 
@@ -75,7 +70,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px; /* space between sections */
 }
 
 
@@ -84,7 +78,6 @@ body {
     grid-template-columns: repeat(8, 58px);
     grid-template-rows: repeat(8, 58px);
     justify-content: center;
-    margin-top: 20px;
 }
 
 .grid-btn {
@@ -102,12 +95,25 @@ body {
     cursor: default;
 }
 
-.bomb-counter-container {
-    margin-top: 20px;
+.flag-counter-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
+}
+
+.flag-counter-container input {
+    width: 50px;
+    padding: 5px;
+    font-size: 18px;
+    text-align: center;
+    border: none;
+    font-weight: bold;
+}
+
+.flag-counter-container p {
+    font-size: 30px;
+    color: red;
 }
 
 .background-images {
