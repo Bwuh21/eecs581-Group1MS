@@ -1,5 +1,14 @@
 # EECS 581 Minesweeper
 
+```
+   _____  .__                                                                 
+  /     \ |__| ____   ____   ________  _  __ ____   ____ ______   ___________ 
+ /  \ /  \|  |/    \_/ __ \ /  ___/\ \/ \/ // __ \_/ __ \\____ \_/ __ \_  __ \
+/    Y    \  |   |  \  ___/ \___ \  \     /\  ___/\  ___/|  |_> >  ___/|  | \/
+\____|__  /__|___|  /\___  >____  >  \/\_/  \___  >\___  >   __/ \___  >__|   
+        \/        \/     \/     \/              \/     \/|__|        \/       
+```
+
 A Minesweeper game implementation built with vanilla HTML, CSS, and JavaScript as part of a Software Engineering course project.
 
 > **Project Status:** 🚧 Under Development  
