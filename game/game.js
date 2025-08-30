@@ -16,6 +16,16 @@ window.onload = function () {
 class Game {
 	constructor() {
 		this.started = false;
+		this.dead = false;
+
+		this.map = undefined;
+		this.bombs = 0;
+		this.flags = 0;
+
+		// Set up create map button
+		document.getElementById("start-game").addEventListener("click", () => {
+			this.createMap();
+		});
 	}
 
 	/*
@@ -23,12 +33,16 @@ class Game {
 	 */
 	initialize(width = 8, height = 8, bombs = 8) {
 		this.bombs = bombs;
+		this.flags = this.bombs;
+
 		this.map = new Map(width, height, this);
 
 		// Set up html grid
 		const grid = document.getElementById("minesweeper-grid");
 		grid.innerHTML = "";
-
+		grid.style.gridTemplateColumns = `repeat(${width}, 58px)`;
+		grid.style.gridTemplateRows = `repeat(${height}, 58px)`;
+		
 		for (let y = 0; y < height; y++) {
 			for (let x = 0; x < width; x++) {
 				// Create buttons
@@ -48,10 +62,19 @@ class Game {
 		}
 
 		this.map.updateMap();
+		this.updateFlagCounter();
+	}
+
+	createMap() {
+		const gridWidth = document.getElementById("grid-width");
+		const gridHeight = document.getElementById("grid-height");
+		const bombCount = document.getElementById("bomb-count");
+		this.initialize(gridWidth.value, gridHeight.value, bombCount.value);
 	}
 
 	start(startX, startY) {
 		this.started = true;
+		this.flags = this.bombs;
 
 		this.map.generateBombs(this.bombs, startX, startY);
 		this.map.updateMap();
@@ -74,6 +97,28 @@ class Game {
 		} else {
 			setStatus("Game over", "lost");
 		}
+	}
+
+	placeFlag() {
+		if (this.flags < 1) {
+			return false;
+		}
+		this.flags--;
+		this.updateFlagCounter();
+
+		return true
+	}
+
+	removeFlag(x, y) {
+		this.flags++;
+		this.updateFlagCounter();
+
+		return true
+	}
+
+	updateFlagCounter() {
+		const flagCounter = document.getElementById("flag-counter");
+		flagCounter.value = this.flags;
 	}
 }
 

@@ -183,9 +183,12 @@ export class Map {
 		// Place flag on covered tiles
 		if (this.getCell(x, y, 3) === 1) {
 			if (this.getCell(x, y, 2) === 0) {
-				// Place
-				this.setCell(x, y, 2, 1);
+				if (this.game.placeFlag()) {
+					// Place
+					this.setCell(x, y, 2, 1);
+				}
 			} else {
+				this.game.removeFlag()
 				// Remove
 				this.setCell(x, y, 2, 0);
 			}
