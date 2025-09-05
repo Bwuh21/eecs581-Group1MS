@@ -12,7 +12,7 @@
 A Minesweeper game implementation built with vanilla HTML, CSS, and JavaScript as part of a Software Engineering course project.
 
 > **Project Status:** 🚧 Under Development  
-> This is an educational project for EECS 581 - Software Engineering.
+> This is an educational project for EECS 581 - Software Engineering 2.
 
 ---
 
