@@ -32,6 +32,10 @@ class Game {
 	 * Set up game upon loading the webpage.
 	 */
 	initialize(width = 10, height = 10, bombs = 10) {
+		this.started = false;
+		this.dead = false;
+		setStatus("", "");
+
 		this.bombs = bombs;
 		this.flags = this.bombs;
 
@@ -93,6 +97,7 @@ class Game {
 		if (result === "win") {
 			setStatus("😎 You won!", "won");
 		} else if (result === "lose") {
+			this.map.revealBombs();
 			setStatus("💥 You lost!", "lost");
 		} else {
 			setStatus("Game over", "lost");

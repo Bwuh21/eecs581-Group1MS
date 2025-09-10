@@ -58,6 +58,17 @@ export class Map {
 		}
 	}
 
+	revealBombs() {
+		for (let y = 0; y < this.h; y++) {
+			for (let x = 0; x < this.w; x++) {
+				if (this.getCell(x, y, 1) === 1) {
+					// Uncover bomb
+					this.setCell(x, y, 3, 0);
+				}
+			}
+		}
+	}
+
 	setCell(x, y, i, v) {
 		if (!this.inMap(x, y)) return;
 		this.grid[y][x][i] = v;
