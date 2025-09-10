@@ -31,7 +31,7 @@ class Game {
 	/*
 	 * Set up game upon loading the webpage.
 	 */
-	initialize(width = 8, height = 8, bombs = 8) {
+	initialize(width = 10, height = 10, bombs = 10) {
 		this.bombs = bombs;
 		this.flags = this.bombs;
 
