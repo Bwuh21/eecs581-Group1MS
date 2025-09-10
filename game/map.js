@@ -203,11 +203,11 @@ export class Map {
 		// If empty, look for neighboring empty tiles.
 		if (empty) {
 			const visited = [];
-			for (let y = 0; y < this.h; y++) {
-				visited[y] = [];
-				for (let x = 0; x < this.w; x++) {
+			for (let x = 0; x < this.w; x++) {
+				visited[x] = [];
+				for (let y = 0; y < this.h; y++) {
 					// [Visual Number (Surrounding bombs), Bomb, Flag?, Covered?]
-					visited[y][x] = false;
+					visited[x][y] = false;
 				}
 			}
 
@@ -218,28 +218,23 @@ export class Map {
 	_flood(x, y, visited) {
 		// Clear cell and mark it as visited
 		this.setCell(x, y, 3, 0);
-		visited[y][x] = true;
+		visited[x][y] = true;
 
 		if (this.getCell(x, y, 0) !== 0) {
 			// Stop searching if not emptry
 			return;
 		}
 
-		// Up
-		if (this.inMap(x, y - 1) && !visited[y - 1][x]) {
-			this._flood(x, y - 1, visited);
-		}
-		// Left
-		if (this.inMap(x - 1, y) && !visited[y][x - 1]) {
-			this._flood(x - 1, y, visited);
-		}
-		// Down
-		if (this.inMap(x, y + 1) && !visited[y + 1][x]) {
-			this._flood(x, y + 1, visited);
-		}
-		// Right
-		if (this.inMap(x + 1, y) && !visited[y][x + 1]) {
-			this._flood(x + 1, y, visited);
+		// Spread to neighboring tiles
+		for (let dx = -1; dx <= 1; dx++) {
+			for (let dy = -1; dy <= 1; dy++) {
+				if (dx === 0 && dy === 0) {
+					continue;
+				}
+				if (this.inMap(x + dx, y + dy) && !visited[x + dx][y + dy]) {
+					this._flood(x + dx, y + dy, visited);
+				}
+			}
 		}
 		return;
 	}
