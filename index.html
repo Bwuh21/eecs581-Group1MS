@@ -10,6 +10,8 @@
 
 
 <body>
+	<audio id="minesweeper-audio" src="minesweeper.mp3" autoplay loop></audio>
+
 	<!-- Overlay and popup -->
 	<!-- <div id="popupOverlay"></div>
 	<div id="popupContainer">
@@ -17,6 +19,8 @@
 	  <p>PLAY OR DIE.</p>
 	  <button id="closePopup">begin</button>
 	</div> -->
+	
+
 	<div class="background-images">
 		<img src="images/goodbye-kitty.png" alt="goodbye kitty Logo" class="draggable"
 			style="width:150px; top:10px; left:30px;">
@@ -25,8 +29,7 @@
 			style="width:150px; top:600px; left:1250px;">
 		<img src="images/lightning-mcqueen-engineer.png" alt="tomater" class="draggable"
 			style="width:150px; top:400px; left:200px;">
-		<img src="images/tubby.jpeg" alt="tomater" class="draggable"
-			style="width:100px; top:400px; left:1200px;">
+		<img src="images/tubby.jpeg" alt="tomater" class="draggable" style="width:100px; top:400px; left:1200px;">
 	</div>
 
 
@@ -92,6 +95,15 @@
 			indicator.className = "status-indicator " + statusClass;
 		}
 
+		// Play audio after first user interaction
+		function enableAudioAutoplay() {
+			const audio = document.getElementById('minesweeper-audio');
+			if (audio) {
+				audio.play();
+				document.removeEventListener('click', enableAudioAutoplay);
+			}
+		}
+		document.addEventListener('click', enableAudioAutoplay);
 	</script>
 
 
