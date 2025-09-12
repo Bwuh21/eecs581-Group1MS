@@ -76,6 +76,6 @@ Once core functionality is complete, potential improvements include:
 
 ## Course Information
 
-**Course:** EECS 581 - Software Engineering  
+**Course:** EECS 581 - Software Engineering II
 **Repository:** eecs581-minesweeper  
 **Branch:** main
