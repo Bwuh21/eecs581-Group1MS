@@ -1,3 +1,43 @@
+/**
+ * Class Map
+ * 
+ * Represents the game board for Minesweeper.
+ * 
+ * Internal cell representation:
+ *   [0] → Visual number (count of surrounding bombs)
+ *   [1] → Bomb (0 = no bomb, 1 = bomb present)
+ *   [2] → Flag (0 = none, 1 = flagged)
+ *   [3] → Covered (1 = covered, 0 = uncovered)
+ * 
+ * Core responsibilities:
+ * - Build and store the game grid in memory.
+ * - Randomly place bombs while ensuring the player’s first click and its neighbors are safe.
+ * - Update the surrounding number counts whenever a bomb is placed.
+ * - Reveal all bombs when the player loses.
+ * - Update the visual representation of each cell in the DOM (via updateCell).
+ * - Handle left-clicks (reveal) and right-clicks (toggle flag).
+ * - Implement a flood-fill algorithm to automatically reveal empty regions.
+ * - Check for win conditions (all safe cells uncovered).
+ * 
+ * Key methods:
+ * - constructor(width, height, game): Initializes the grid and links to the Game instance.
+ * - generateBombs(bombCount, startX, startY): Places bombs and updates numbers.
+ * - revealBombs(): Uncovers all bombs on the board.
+ * - setCell(x, y, i, v): Updates a cell property and triggers visual update.
+ * - updateCell(x, y): Renders the current state of a cell to the UI.
+ * - cellClicked(x, y): Handles left-click (reveal logic).
+ * - cellRightClicked(x, y): Handles right-click (flag placement/removal).
+ * - floodFill(x, y): Expands reveals over empty cells recursively.
+ * - checkWin(): Returns true if all non-bomb cells are uncovered.
+ * 
+ * Design notes:
+ * - This class is tightly coupled with the DOM: each cell corresponds to a
+ *   button element with id `cell-x-y`.
+ * - Relies on the Game object for global state management (start, finish, flags).
+ * - Game logic and rendering are partially mixed, since updateCell writes directly to the DOM.
+ */
+
+// MAP CLASS 🗺️📍🧭 ————————————————————————————————————————————————————————————————————————————————
 export class Map {
 	constructor(width, height, game) {
 		this.w = width;
