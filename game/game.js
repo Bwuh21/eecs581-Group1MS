@@ -1,4 +1,46 @@
-import { Map } from "./map.js";
+/**
+ * Minesweeper Game Logic (Frontend)
+ * ---------------------------------
+ * This script implements the client-side logic for a Minesweeper-style game.
+ *
+ * Main responsibilities:
+ *  - Popup management: Displays a welcome/info popup on page load
+ *    and provides a close button to dismiss it.
+ *  - Game lifecycle: Handles initialization, start, and finish states
+ *    (win/lose/neutral), as well as flag placement/removal.
+ *  - Grid rendering: Dynamically generates an HTML grid of clickable
+ *    cells based on user-defined width, height, and bomb count.
+ *  - User interaction: Registers click (reveal cell) and right-click
+ *    (toggle flag) events on each cell.
+ *  - State tracking: Tracks whether the game has started, whether
+ *    the player is dead, bombs remaining, and flags placed.
+ *  - UI updates: Updates the game status message and flag counter
+ *    throughout gameplay.
+ *
+ * Core components:
+ *  - `Game` class: Encapsulates game state and methods for setup,
+ *    starting, finishing, and flag management.
+ *  - `Map` class (imported): Handles internal board logic such as
+ *    bomb generation, adjacency calculation, and cell reveal.
+ *
+ * DOM element requirements:
+ *  - #popupOverlay and #popupContainer for the startup popup
+ *  - #closePopup button inside popup
+ *  - #start-game button to trigger game creation
+ *  - #grid-width, #grid-height, and #bomb-count inputs for game setup
+ *  - #minesweeper-grid container for the game board
+ *  - #flag-counter to display flags remaining
+ *
+ * Usage:
+ *  - On page load, the popup displays automatically.
+ *  - The "Start Game" button initializes the board with parameters
+ *    set by the user in the input fields.
+ *  - Left-click reveals cells, right-click toggles flags.
+ *  - The game ends with a win (all safe cells revealed) or loss
+ *    (bomb clicked), and no further interaction is possible.
+ */
+
+import { Map } from "./map.js"; // Imported Map CLASS
 
 // --- Popup logic ---
 window.onload = function () {
@@ -13,6 +55,7 @@ window.onload = function () {
 	};
 };
 
+// GAME CLASS ——————————————————————————————————————————————————————————————————————
 class Game {
 	constructor() {
 		this.started = false;
