@@ -1,3 +1,31 @@
+<!-- 
+File Name: index.html
+Project: Minesweeper (EECS 581 - Fall 2025)
+Description: 
+    Main entry point for the Minesweeper web application. 
+    Provides structure for the user interface, including 
+    the popup welcome overlay, draggable images, settings 
+    panel, minesweeper grid, audio playback, and footer.
+
+Inputs:
+    - User inputs for game settings (width, height, number of mines).
+    - Mouse events for dragging background images.
+    - User interaction (clicks) to enable audio autoplay.
+
+Outputs:
+    - Visual Minesweeper grid generated via game.js.
+    - Real-time status messages in the status indicator.
+    - Flag counter displaying remaining flags.
+
+External Sources:
+    - Draggable image and cursor interaction pattern adapted from 
+      common JavaScript drag-and-drop tutorials (e.g., MDN Web Docs).
+    - Minesweeper core logic implemented in external file `game/game.js`.
+
+Author: Reem Fatima
+Creation Date: September 19, 2025
+===============================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,22 +33,25 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Minesweeper</title>
+
+	<!-- External stylesheet and favicon -->
 	<link rel="stylesheet" href="styles.css">
 	<link rel="icon" type="image/goodbye-kitty.png" href="/images/goodbye-kitty.png">
-
+</head>
 
 <body>
+	<!-- Background audio -->
 	<audio id="minesweeper-audio" src="audio/minesweeper.mp3" autoplay loop></audio>
 
 	<!-- Overlay and popup -->
 	<div id="popupOverlay"></div>
 	<div id="popupContainer">
 	  <h2>Welcome!</h2>
-	  <p>PLAY OR DIE.</p>
+	  <p>PLAY</p>
 	  <button id="closePopup">begin</button>
 	</div>
 	
-
+	<!-- Draggable background images -->
 	<div class="background-images">
 		<img src="images/goodbye-kitty.png" alt="goodbye kitty Logo" class="draggable"
 			style="width:150px; top:10px; left:30px;">
@@ -35,6 +66,7 @@
 
 
 	<div class="content">
+		<!-- Game settings form-->
 		<div class="settings">
 			<h2>Game Settings</h2>
 			<label>
@@ -52,23 +84,27 @@
 			<button id="start-game">Start Game</button>
 		</div>
 
+		<!-- Dynamic status indicator (e.g., "You Won!" / "Game Over") -->
 		<div class="status-indicator" id="status-indicator"></div>
 
-
+		<!-- Flag counter display -->
 		<div class="flag-counter-container">
 			<p>⚑</p>
 			<input type="text" id="flag-counter" value="10" placeholder="Mines" readonly>
-
 		</div>
 
+		<!-- Game grid will be generated here by game.js -->
 		<div class="minesweeper-grid" id="minesweeper-grid"></div>
 		<script type="module" src="game/game.js"></script>
 	</div>
 
+	<!-- Inline JavaScript for draggable images and status updates -->
 	<script>
+		// Makes the background images draggable by the user
 		document.querySelectorAll('.draggable').forEach(img => {
 			let offsetX, offsetY, isDragging = false;
 
+			// Mouse down -> starts dragging
 			img.addEventListener('mousedown', e => {
 				isDragging = true;
 				offsetX = e.clientX - img.offsetLeft;
@@ -76,6 +112,7 @@
 				img.style.cursor = 'grabbing';
 			});
 
+			// Mouse move -> updates the image position
 			document.addEventListener('mousemove', e => {
 				if (isDragging) {
 					img.style.left = (e.clientX - offsetX) + 'px';
@@ -83,20 +120,31 @@
 				}
 			});
 
+			// Mouse up -> stops dragging
 			document.addEventListener('mouseup', () => {
 				isDragging = false;
 				img.style.cursor = 'grab';
 			});
 		});
 
+		/**
+		 * setStatus
+		 * Updates the status message displayed to the player.
+		 * @param {string} message - Message to display.
+		 * @param {string} statusClass - CSS class for styling (e.g., win/lose).
+		 */
 		function setStatus(message, statusClass) {
 			const indicator = document.getElementById("status-indicator");
 			indicator.textContent = message;
 			indicator.className = "status-indicator " + statusClass;
 		}
 
-		// Play audio after first user interaction
-		function enableAudioAutoplay() {
+		/**
+		 * enableAudioAutoplay
+		 * Ensures audio starts only after the first user interaction
+		 * (browser restriction workaround).
+		 */
+			function enableAudioAutoplay() {
 			const audio = document.getElementById('minesweeper-audio');
 			if (audio) {
 				audio.play();
@@ -109,6 +157,7 @@
 
 </body>
 
+<!-- Course footer-->
 <footer>
 	<p style="text-align: center;">EECS 581 - Fall 2025 - University of Kansas</p>
 
