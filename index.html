@@ -41,7 +41,7 @@ Creation Date: September 19, 2025
 
 <body>
 	<!-- Background audio -->
-	<audio id="minesweeper-audio" src="audio/minesweeper.mp3" autoplay loop></audio>
+	<audio id="minesweeper-audio" src="audio/classic.mp3" autoplay loop></audio>
 
 	<!-- Overlay and popup -->
 	<div id="popupOverlay"></div>
@@ -81,6 +81,14 @@ Creation Date: September 19, 2025
 				Mines:
 				<input type="number" id="bomb-count" value="10" min="10" max="20">
 			</label>
+			<div class="audio-settings">
+				<h3>Music</h3>
+				<label for="audio-track">Track:</label>
+				<select id="audio-track">
+					<option value="classic" selected>Classic</option>
+					<option value="rap">Rap</option>
+				</select>
+			</div>
 			<button id="start-game">Start Game</button>
 		</div>
 
@@ -139,19 +147,61 @@ Creation Date: September 19, 2025
 			indicator.className = "status-indicator " + statusClass;
 		}
 
+		const audioElement = document.getElementById('minesweeper-audio');
+		const trackSelect = document.getElementById('audio-track');
+		const audioTracks = {
+			classic: 'audio/classic.mp3',
+			rap: 'audio/rap.mp3'
+		};
+		let audioUnlocked = false;
+
+		function setAudioTrack(trackKey, shouldAutoplay) {
+			if (!audioElement) return;
+			const nextSrc = audioTracks[trackKey];
+			if (!nextSrc) return;
+
+			if (audioElement.getAttribute('src') !== nextSrc) {
+				audioElement.src = nextSrc;
+				audioElement.load();
+			}
+
+			if (shouldAutoplay && audioUnlocked) {
+				const playPromise = audioElement.play();
+				if (playPromise) {
+					playPromise.catch(() => {
+						// Ignore autoplay errors, browser will retry after next interaction.
+					});
+				}
+			}
+		}
+
+		if (trackSelect) {
+			trackSelect.addEventListener('change', (event) => {
+				setAudioTrack(event.target.value, true);
+			});
+			setAudioTrack(trackSelect.value, false);
+		}
+
 		/**
 		 * enableAudioAutoplay
 		 * Ensures audio starts only after the first user interaction
 		 * (browser restriction workaround).
 		 */
-			function enableAudioAutoplay() {
-			const audio = document.getElementById('minesweeper-audio');
-			if (audio) {
-				audio.play();
-				document.removeEventListener('click', enableAudioAutoplay);
+		function enableAudioAutoplay() {
+			if (!audioElement) return;
+			audioUnlocked = true;
+			const playPromise = audioElement.play();
+			if (playPromise) {
+				playPromise.catch(() => {
+					// Ignore autoplay errors, browser will retry after next interaction.
+				});
 			}
 		}
-		document.addEventListener('click', enableAudioAutoplay);
+
+		document.addEventListener('click', function handleFirstInteraction() {
+			enableAudioAutoplay();
+			document.removeEventListener('click', handleFirstInteraction);
+		}, { once: true });
 	</script>
 
 
