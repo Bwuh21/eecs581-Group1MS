@@ -1,0 +1,77 @@
+﻿System Architecture
+
+
+Purpose: 
+* Describes the high-level structure to facilitate feature extensions by the Project 2 team
+
+
+Components:
+* Board Manager: Manages the grid as a 2D array (Map class), tracking per cell state [adj, isBomb, isFlagged, isCovered]
+* Game Logic: Handles gameplay rules (first-click-safe mine placement with neighbor exclusion, cell uncovering, flood-fill reveal for adj=0, win/loss detection); split between Game (lifecycle, counters) and Map (cell operations)
+* User interface: Renders the grid and status indicators (minesweeper-grid, flag-counter, status-indicator); Map.updateCell writes directly to DOM; setStatus updates game state texta
+* Input Handler; Per-cell left-click/right-click listeners created in Game.initialize(...) that cell Map.cellClicked(x,y) / Map.cellRightClicked (x,y)
+
+
+Data Flow: 
+
+1. User Actions
+- Left-click on a cell → attempts to reveal it.
+- Right-click (context menu) → toggles a flag on the cell.
+- Button clicks in the popup → close popup or start a new game.
+- Grid size / bomb count inputs → configure the new game before creation.
+
+
+2. Input Handling
+- Event listeners are registered in Game.initialize() when building the HTML grid.
+  - click → calls Map.cellClicked(x, y)
+  - contextmenu → calls Map.cellRightClicked(x, y)
+- The "Start Game" button calls Game.createMap() which sets up the board with values from the inputs.
+
+
+3. Game Logic 
+- Game lifecycle:
+  - initialize() sets up a new grid, resets flags, bombs, and state.
+  - start(x, y) is triggered on the first click → calls Map.generateBombs() ensuring the clicked cell
+    (and neighbors) are safe.
+  - finish(result) disables all buttons and updates the status message.
+- Flag tracking:
+  - placeFlag() and removeFlag() adjust the flag counter and call updateFlagCounter() to refresh DOM.
+- Popup & UI management:
+  - Popup shown on load via window.onload.
+  - Game status and flag counter updated dynamically during play.
+
+
+4. Board Logic (Map class in map.js)
+- Grid state:
+  - Stored as a 2D array: grid[y][x] = [adjacentCount, isBomb, isFlagged, isCovered].
+- Bomb generation:
+  - generateBombs() randomly places bombs while excluding the first-clicked cell and its neighbors.
+- Cell updates:
+  - setCell() updates a property and immediately calls updateCell() to redraw the DOM button.
+  - updateCell() chooses what to render: ⬛ (covered), 🚩 (flag), 💣 (bomb), or numbers (with colors).
+- Click handling:
+  - cellClicked(x, y) → reveals cells, runs flood fill if empty, and checks win/loss conditions.
+  - cellRightClicked(x, y) → toggles flag state, updates counter via Game.
+- Flood-fill:
+  - floodFill() and _flood() recursively uncover safe empty cells.
+- Win check:
+  - checkWin() scans the grid to confirm all non-bomb cells are uncovered.
+
+
+5. UI Updates
+- Grid: Each cell is represented as a <button> inside #minesweeper-grid.
+- Flag counter: Updated through Game.updateFlagCounter().
+- Game status message: Updated via setStatus() calls in Game.start() and Game.finish().
+
+
+Flow Summary:
+User Action → Game (input listener) → Map (board update) → Game (state) → UI
+
+
+
+Key Data Structures:
+* 2D array for grid: grid[y][x] = [adj, isBomb, isFlagged, isCovered] where adj 0…8, flags/bomb/covered are 0|1
+* Game state object: Game tracks started, bombs (total mines), flags (remaining); win when all non-bomb cells uncovered, loss on bomb uncover
+Assumptions: 
+* Default 10x10 grid; grid size can be set via UI (width/height)
+* Mine count user-specified (10-20) at game start, first click (and its 8 neighbors) is guaranteed safe
