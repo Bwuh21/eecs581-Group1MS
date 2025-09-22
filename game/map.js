@@ -114,7 +114,6 @@ export class Map {
 	/**
      * Reveal all bombs on the board when the player loses.
      */
-
 	revealBombs() {
 		for (let y = 0; y < this.h; y++) {
 			for (let x = 0; x < this.w; x++) {
