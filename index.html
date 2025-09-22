@@ -64,23 +64,27 @@ Creation Date: September 08, 2025
 	</div>
 
 
-
+	<!-- Main content area -->
 	<div class="content">
 		<!-- Game settings form-->
 		<div class="settings">
 			<h2>Game Settings</h2>
 			<label>
+				<!-- width -->
 				Width:
 				<input type="number" id="grid-width" value="10" min="5" max="30">
 			</label>
 			<label>
+				<!-- height-->
 				Height:
 				<input type="number" id="grid-height" value="10" min="5" max="30">
 			</label>
 			<label>
+				<!-- number of bombs-->
 				Mines:
 				<input type="number" id="bomb-count" value="10" min="10" max="20">
 			</label>
+			<!-- Audio settings -->
 			<div class="audio-settings">
 				<h3>Music</h3>
 				<label for="audio-track">Track:</label>
@@ -89,6 +93,7 @@ Creation Date: September 08, 2025
 					<option value="rap">Rap</option>
 				</select>
 			</div>
+			<!-- Start game button -->
 			<button id="start-game">Start Game</button>
 		</div>
 
@@ -209,6 +214,7 @@ Creation Date: September 08, 2025
 			}
 		}
 
+		// Listen for the first user interaction to enable audio autoplay
 		document.addEventListener('click', function handleFirstInteraction() {
 			enableAudioAutoplay();
 			document.removeEventListener('click', handleFirstInteraction);
