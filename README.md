@@ -13,7 +13,7 @@ A Minesweeper game implementation built with vanilla HTML, CSS, and JavaScript a
 
 https://alesan99.github.io/eecs581-minesweeper/  
 
-> **Project Status:** 🚧 Under Development  
+> **Project Status:** Complete 
 > This is an educational project for EECS 581 - Software Engineering 2.
 
 ---
@@ -25,8 +25,6 @@ https://alesan99.github.io/eecs581-minesweeper/
 - CSS Grid-based game board styling
 - Basic Game class structure
 - Static button elements for each cell
-
-### 🚧 In Progress / TODO
 - Game logic implementation
 - Mine placement algorithm
 - Cell reveal functionality
@@ -50,8 +48,9 @@ https://alesan99.github.io/eecs581-minesweeper/
 ├── index.html          # Main HTML file with game board
 ├── styles.css          # CSS styling for the game
 ├── game/
-│   └── game.js        # JavaScript game logic (basic structure)
-└── README.md          # This file
+│   └── game.js         # Game logic
+│   └── map.js          # Game grid logic
+└── README.md           # This file
 ```
 
 ---
@@ -59,8 +58,6 @@ https://alesan99.github.io/eecs581-minesweeper/
 ## Development Notes
 
 - The project uses vanilla JavaScript with no external dependencies
-- Grid layout is currently hardcoded as 8x8 in the HTML
-- Game class exists but methods are not yet implemented
 - CSS uses a simple grid layout with basic button styling
 
 ---
@@ -68,7 +65,6 @@ https://alesan99.github.io/eecs581-minesweeper/
 ## Future Enhancements
 
 Once core functionality is complete, potential improvements include:
-- Configurable board sizes and difficulty levels
 - Better visual styling and animations
 - High score tracking
 - Keyboard navigation support
