@@ -142,29 +142,39 @@ Creation Date: September 08, 2025
 		 * @param {string} statusClass - CSS class for styling (e.g., win/lose).
 		 */
 		function setStatus(message, statusClass) {
-			const indicator = document.getElementById("status-indicator");
-			indicator.textContent = message;
-			indicator.className = "status-indicator " + statusClass;
+			const indicator = document.getElementById("status-indicator"); // Status indicator element
+			indicator.textContent = message; // Update message
+			indicator.className = "status-indicator " + statusClass; // Update class for styling
 		}
 
-		const audioElement = document.getElementById('minesweeper-audio');
-		const trackSelect = document.getElementById('audio-track');
+		const audioElement = document.getElementById('minesweeper-audio'); // Audio element
+		const trackSelect = document.getElementById('audio-track'); // Track selection dropdown
+
+		// Available audio tracks
 		const audioTracks = {
 			classic: 'audio/classic.mp3',
 			rap: 'audio/rap.mp3'
 		};
 		let audioUnlocked = false;
 
+		/**
+		 * setAudioTrack
+		 * Changes the audio track and optionally starts playback.
+		 * @param {string} trackKey - Key of the selected track.
+		 * @param {boolean} shouldAutoplay - Whether to autoplay after setting.
+		 */
 		function setAudioTrack(trackKey, shouldAutoplay) {
-			if (!audioElement) return;
+			if (!audioElement) return; // exit if no audio element is present
 			const nextSrc = audioTracks[trackKey];
-			if (!nextSrc) return;
+			if (!nextSrc) return; // exit if invalid track key
 
+			// Change source if it differs from the current
 			if (audioElement.getAttribute('src') !== nextSrc) {
 				audioElement.src = nextSrc;
 				audioElement.load();
 			}
 
+			// Autoplay if allowed
 			if (shouldAutoplay && audioUnlocked) {
 				const playPromise = audioElement.play();
 				if (playPromise) {
@@ -175,11 +185,12 @@ Creation Date: September 08, 2025
 			}
 		}
 
+		// Event listener for track selection changes
 		if (trackSelect) {
-			trackSelect.addEventListener('change', (event) => {
-				setAudioTrack(event.target.value, true);
+			trackSelect.addEventListener('change', (event) => { // listens for changes in the dropdown selection
+				setAudioTrack(event.target.value, true); // change track and autoplay
 			});
-			setAudioTrack(trackSelect.value, false);
+			setAudioTrack(trackSelect.value, false); // set initial track without autoplay
 		}
 
 		/**
