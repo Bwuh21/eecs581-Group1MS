@@ -1,6 +1,6 @@
 /**
  * Author: Reem Fatima, Pashia Vang, Alejandro Sandoval, Liam Aga, Jorge Trujillo, Aiden Barnard
- * Creation Date: 2025-09-21
+ * Creation Date: 2025-09-08
  * File: game.js
  * Description: Frontend logic for Minesweeper-style game.
  * Inputs/Outputs:
