@@ -1,4 +1,13 @@
 /**
+ * Author: Reem Fatima, Pashia Vang, Alejandro Sandoval, Liam Aga, Jorge Trujillo, Aiden Barnard
+ * Creation Date: 2025-09-21
+ * File: map.js
+ * Description: Implements the backend board logic for a Minesweeper-style game.
+ * Inputs/Outputs:
+ *   - Inputs: width, height, user clicks (left/right), bomb count
+ *   - Outputs: Updates DOM cells, flag counters, and game status messages
+ * External Sources: None (custom implementation)
+
  * Class Map
  * 
  * Represents the game board for Minesweeper.
@@ -40,9 +49,9 @@
 // MAP CLASS 🗺️📍🧭 ————————————————————————————————————————————————————————————————————————————————
 export class Map {
 	constructor(width, height, game) {
-		this.w = width;
-		this.h = height;
-		this.game = game;
+		this.w = width; // width
+		this.h = height; // height
+		this.game = game; // reference to Game instance
 
 		// Create grid
 		this.grid = [];
@@ -55,6 +64,10 @@ export class Map {
 		}
 	}
 
+	/**
+     * Randomly place bombs on the grid while ensuring the first clicked
+     * cell and its neighbors are safe.
+     */
 	generateBombs(bombCount, startX, startY) {
 		// Generate random number of bombs
 		let count = 0;
@@ -98,6 +111,10 @@ export class Map {
 		}
 	}
 
+	/**
+     * Reveal all bombs on the board when the player loses.
+     */
+
 	revealBombs() {
 		for (let y = 0; y < this.h; y++) {
 			for (let x = 0; x < this.w; x++) {
@@ -109,6 +126,13 @@ export class Map {
 		}
 	}
 
+	/**
+     * Set a property of a cell and update its visual representation.
+     * @param {number} x - X coordinate
+     * @param {number} y - Y coordinate
+     * @param {number} i - Index in cell array (0-Visual,1-Bomb,2-Flag,3-Covered)
+     * @param {number} v - New value
+     */
 	setCell(x, y, i, v) {
 		if (!this.inMap(x, y)) return;
 		this.grid[y][x][i] = v;
@@ -116,6 +140,9 @@ export class Map {
 		this.updateCell(x, y);
 	}
 
+	/**
+     * Update all cells on the board (used after bomb placement or game reset)
+     */
 	updateMap(x, y) {
 		for (let y = 0; y < this.h; y++) {
 			for (let x = 0; x < this.w; x++) {
@@ -123,6 +150,10 @@ export class Map {
 			}
 		}
 	}
+
+	/**
+     * Update a single cell in the UI based on its current state.
+     */
 
 	updateCell(x, y) {
 		const btn = document.getElementById(`cell-${x}-${y}`);
@@ -149,6 +180,7 @@ export class Map {
 			return;
 		}
 
+		// Number tile (1-8)
 		const number = this.getCell(x, y, 0);
 		if (number > 0) {
 			btn.textContent = number;
@@ -180,13 +212,14 @@ export class Map {
 					break;
 			}
 		} else {
-			btn.textContent = "";
+			btn.textContent = ""; // empty cell
 		}
 
 		// Uncovered, disable.
 		btn.disabled = true;
 	}
 
+	// safely get cell property
 	getCell(x, y, i) {
 		if (!this.inMap(x, y)) return;
 
@@ -196,10 +229,15 @@ export class Map {
 		return this.grid[y][x][i];
 	}
 
+	// check if coordinates are within map bounds
 	inMap(x, y) {
 		return x >= 0 && y >= 0 && x < this.w && y < this.h;
 	}
 
+	/**
+     * Handle left-click on a cell
+     * @returns {boolean} true if cell revealed, false if bomb or flagged
+     */
 	cellClicked(x, y) {
 		if (!this.game.started) {
 				this.game.start(x, y);
@@ -230,6 +268,9 @@ export class Map {
 		return false;
 	}
 
+	/**
+     * Handle right-click on a cell (place/remove flag)
+     */
 	cellRightClicked(x, y) {
 		// Place flag on covered tiles
 		if (this.getCell(x, y, 3) === 1) {
@@ -246,6 +287,9 @@ export class Map {
 		}
 	}
 
+	/**
+     * Flood-fill empty tiles recursively
+     */
 	floodFill(startX, startY) {
 		const empty = this.getCell(startX, startY, 0) === 0;
 		// Clear first cell
@@ -266,6 +310,7 @@ export class Map {
 		}
 	}
 
+	// Internal helper for recursive flood-fill
 	_flood(x, y, visited) {
 		// Clear cell and mark it as visited
 		this.setCell(x, y, 3, 0);
@@ -290,6 +335,10 @@ export class Map {
 		return;
 	}
 
+	/**
+     * Check win condition: all non-bomb tiles uncovered
+     * @returns {boolean}
+     */
 	checkWin() {
 		for (let y = 0; y < this.h; y++) {
 			for (let x = 0; x < this.w; x++) {
