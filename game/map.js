@@ -65,9 +65,9 @@ export class Map {
 	}
 
 	/**
-     * Randomly place bombs on the grid while ensuring the first clicked
-     * cell and its neighbors are safe.
-     */
+	 * Randomly place bombs on the grid while ensuring the first clicked
+	 * cell and its neighbors are safe.
+	 */
 	generateBombs(bombCount, startX, startY) {
 		// Generate random number of bombs
 		let count = 0;
@@ -112,8 +112,8 @@ export class Map {
 	}
 
 	/**
-     * Reveal all bombs on the board when the player loses.
-     */
+	 * Reveal all bombs on the board when the player loses.
+	 */
 	revealBombs() {
 		for (let y = 0; y < this.h; y++) {
 			for (let x = 0; x < this.w; x++) {
@@ -126,12 +126,12 @@ export class Map {
 	}
 
 	/**
-     * Set a property of a cell and update its visual representation.
-     * @param {number} x - X coordinate
-     * @param {number} y - Y coordinate
-     * @param {number} i - Index in cell array (0-Visual,1-Bomb,2-Flag,3-Covered)
-     * @param {number} v - New value
-     */
+	 * Set a property of a cell and update its visual representation.
+	 * @param {number} x - X coordinate
+	 * @param {number} y - Y coordinate
+	 * @param {number} i - Index in cell array (0-Visual,1-Bomb,2-Flag,3-Covered)
+	 * @param {number} v - New value
+	 */
 	setCell(x, y, i, v) {
 		if (!this.inMap(x, y)) return;
 		this.grid[y][x][i] = v;
@@ -140,8 +140,8 @@ export class Map {
 	}
 
 	/**
-     * Update all cells on the board (used after bomb placement or game reset)
-     */
+	 * Update all cells on the board (used after bomb placement or game reset)
+	 */
 	updateMap(x, y) {
 		for (let y = 0; y < this.h; y++) {
 			for (let x = 0; x < this.w; x++) {
@@ -151,16 +151,11 @@ export class Map {
 	}
 
 	/**
-     * Update a single cell in the UI based on its current state.
-     */
+	 * Update a single cell in the UI based on its current state.
+	 */
 
 	updateCell(x, y) {
 		const btn = document.getElementById(`cell-${x}-${y}`);
-		if (!btn) {
-			console.warn(`No cell at (${x}, ${y})`);
-			return;
-		}
-
 		// Flag
 		if (this.getCell(x, y, 2) === 1) {
 			btn.textContent = "🚩";
@@ -234,42 +229,60 @@ export class Map {
 	}
 
 	/**
-     * Handle left-click on a cell
-     * @returns {boolean} true if cell revealed, false if bomb or flagged
-     */
-	cellClicked(x, y) {
-		if (!this.game.started) {
-				this.game.start(x, y);
-		}
+	 * Handle left-click on a cell
+	 * @returns {boolean} true if cell revealed, false if bomb or flagged
+	 */
+	// REPLACE your cellClicked function in map.js with this version:
 
+	cellClicked(x, y) {
+		// Allow AI clicks when AI is making its move, but block player clicks
+		if (typeof currentTurn !== 'undefined' && currentTurn === "ai") {
+			// Only allow if AI is not thinking (meaning it's making its actual move)
+			if (typeof aiThinking !== 'undefined' && aiThinking) {
+				return false;
+			}
+		} else if (typeof currentTurn !== 'undefined' && currentTurn !== "player") {
+			return false;
+		}
+		// Block player clicks when AI is thinking
+		if (typeof aiThinking !== 'undefined' && aiThinking) {
+			return false;
+		}
+		if (!this.game.started) {
+			this.game.start(x, y);
+		}
 		// Don't do anything if there is a flag
 		if (this.getCell(x, y, 2) === 1) {
-				return;
+			return false;
 		}
-
 		// If clicked on a bomb → lose
 		if (this.getCell(x, y, 1) === 1) {
-				this.setCell(x, y, 3, 0); // uncover bomb
-				this.game.finish("lose");
-				return false;
+			this.setCell(x, y, 3, 0);
+			this.game.finish("lose");
+			return false;
 		}
-
 		// Uncover tile
 		if (this.getCell(x, y, 3) === 1) {
-				this.floodFill(x, y);
-
-				// Check win after uncover
-				if (this.checkWin()) {
-						this.game.finish("win");
-				}
+			this.floodFill(x, y);
+			// Check win after uncover
+			if (this.checkWin()) {
+				this.game.finish("win");
 				return true;
+			}
+			// Only trigger AI if this was a PLAYER move (not an AI move)
+			if (typeof aiMode !== 'undefined' && aiMode &&
+				typeof currentTurn !== 'undefined' && currentTurn === "player" &&
+				typeof endPlayerTurn === 'function') {
+				endPlayerTurn();
+			}
+			return true;
 		}
 		return false;
 	}
 
 	/**
-     * Handle right-click on a cell (place/remove flag)
-     */
+	 * Handle right-click on a cell (place/remove flag)
+	 */
 	cellRightClicked(x, y) {
 		// Place flag on covered tiles
 		if (this.getCell(x, y, 3) === 1) {
@@ -287,13 +300,12 @@ export class Map {
 	}
 
 	/**
-     * Flood-fill empty tiles recursively
-     */
+	 * Flood-fill empty tiles recursively
+	 */
 	floodFill(startX, startY) {
 		const empty = this.getCell(startX, startY, 0) === 0;
 		// Clear first cell
 		this.setCell(startX, startY, 3, 0);
-
 		// If empty, look for neighboring empty tiles.
 		if (empty) {
 			const visited = [];
@@ -314,12 +326,10 @@ export class Map {
 		// Clear cell and mark it as visited
 		this.setCell(x, y, 3, 0);
 		visited[x][y] = true;
-
 		if (this.getCell(x, y, 0) !== 0) {
 			// Stop searching if not emptry
 			return;
 		}
-
 		// Spread to neighboring tiles
 		for (let dx = -1; dx <= 1; dx++) {
 			for (let dy = -1; dy <= 1; dy++) {
@@ -333,11 +343,10 @@ export class Map {
 		}
 		return;
 	}
-
 	/**
-     * Check win condition: all non-bomb tiles uncovered
-     * @returns {boolean}
-     */
+	 * Check win condition: all non-bomb tiles uncovered
+	 * @returns {boolean}
+	 */
 	checkWin() {
 		for (let y = 0; y < this.h; y++) {
 			for (let x = 0; x < this.w; x++) {

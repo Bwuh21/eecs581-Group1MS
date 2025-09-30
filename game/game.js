@@ -69,6 +69,12 @@ window.onload = function () {
 	};
 };
 
+function setStatus(message, className) {
+	const statusElement = document.getElementById("status-indicator");
+	statusElement.textContent = message;
+	statusElement.className = `status-indicator ${className}`;
+}
+
 // GAME CLASS ——————————————————————————————————————————————————————————————————————
 // Encapsulates Minesweeper game state and methods
 class Game {
@@ -106,7 +112,7 @@ class Game {
 		grid.innerHTML = "";
 		grid.style.gridTemplateColumns = `repeat(${width}, 58px)`;
 		grid.style.gridTemplateRows = `repeat(${height}, 58px)`;
-		
+
 		// Create buttons for each cell in grid
 		for (let y = 0; y < height; y++) {
 			for (let x = 0; x < width; x++) {
@@ -133,10 +139,10 @@ class Game {
 		this.updateFlagCounter(); // update flag counter display
 	}
 
-    /**
-     * createMap
-     * Reads user input values and initializes the game board.
-     */
+	/**
+	 * createMap
+	 * Reads user input values and initializes the game board.
+	 */
 	createMap() {
 		const gridWidth = document.getElementById("grid-width");
 		const gridHeight = document.getElementById("grid-height");
@@ -145,11 +151,11 @@ class Game {
 	}
 
 	/**
-     * start
-     * Begins game logic after first click.
-     * @param {number} startX - X-coordinate of first click
-     * @param {number} startY - Y-coordinate of first click
-     */
+	 * start
+	 * Begins game logic after first click.
+	 * @param {number} startX - X-coordinate of first click
+	 * @param {number} startY - Y-coordinate of first click
+	 */
 	start(startX, startY) {
 		this.started = true;
 		this.flags = this.bombs;
@@ -161,35 +167,44 @@ class Game {
 		setStatus("Game in progress...", "playing");
 	}
 
-	/**
-     * finish
-     * Ends the game, disables all interactions, and shows result.
-     * @param {string} result - "win" or "lose"
-     */
 	finish(result) {
 		this.started = false;
+
+		// Reset AI state when game ends
+		if (typeof window.currentTurn !== 'undefined') {
+			window.currentTurn = "player";
+		}
+		if (typeof window.aiThinking !== 'undefined') {
+			window.aiThinking = false;
+		}
+
+		// Clear AI overlay if present
+		const overlay = document.getElementById("ai-thinking-overlay");
+		if (overlay) {
+			overlay.style.display = "none";
+		}
 
 		// disable all cells so no more clicks
 		const grid = document.getElementById("minesweeper-grid");
 		const buttons = grid.querySelectorAll("button");
 		buttons.forEach((btn) => (btn.disabled = true));
 
-		// display result message
+		// display result message with restart option
 		if (result === "win") {
-			setStatus("😎 You won!", "won");
+			setStatus("😎 You won! Click 'Start Game' to play again.", "won");
 		} else if (result === "lose") {
 			this.map.revealBombs();
-			setStatus("💥 You lost!", "lost");
+			setStatus("💥 You lost! Click 'Start Game' to play again.", "lost");
 		} else {
-			setStatus("Game over", "lost");
+			setStatus("Game over! Click 'Start Game' to play again.", "lost");
 		}
 	}
 
 	/**
-     * placeFlag
-     * Deducts one flag and updates counter.
-     * @returns {boolean} true if flag was placed
-     */
+	 * placeFlag
+	 * Deducts one flag and updates counter.
+	 * @returns {boolean} true if flag was placed
+	 */
 	placeFlag() {
 		if (this.flags < 1) {
 			return false;
@@ -201,12 +216,12 @@ class Game {
 	}
 
 	/**
-     * removeFlag
-     * Adds back a flag and updates counter.
-     * @param {number} x - X-coordinate (unused internally)
-     * @param {number} y - Y-coordinate (unused internally)
-     * @returns {boolean} true if flag removed
-     */
+	 * removeFlag
+	 * Adds back a flag and updates counter.
+	 * @param {number} x - X-coordinate (unused internally)
+	 * @param {number} y - Y-coordinate (unused internally)
+	 * @returns {boolean} true if flag removed
+	 */
 	removeFlag(x, y) {
 		this.flags++;
 		this.updateFlagCounter();
@@ -215,9 +230,9 @@ class Game {
 	}
 
 	/**
-     * updateFlagCounter
-     * Updates the HTML input that shows remaining flags
-     */
+	 * updateFlagCounter
+	 * Updates the HTML input that shows remaining flags
+	 */
 	updateFlagCounter() {
 		const flagCounter = document.getElementById("flag-counter");
 		flagCounter.value = this.flags;

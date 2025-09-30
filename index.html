@@ -46,11 +46,11 @@ Creation Date: September 08, 2025
 	<!-- Overlay and popup -->
 	<div id="popupOverlay"></div>
 	<div id="popupContainer">
-	  <h2>Welcome!</h2>
-	  <p>PLAY</p>
-	  <button id="closePopup">begin</button>
+		<h2>Welcome!</h2>
+		<p>PLAY</p>
+		<button id="closePopup">begin</button>
 	</div>
-	
+
 	<!-- Draggable background images -->
 	<div class="background-images">
 		<img src="images/goodbye-kitty.png" alt="goodbye kitty Logo" class="draggable"
@@ -93,8 +93,13 @@ Creation Date: September 08, 2025
 					<option value="rap">Rap</option>
 				</select>
 			</div>
-			<!-- Start game button -->
 			<button id="start-game">Start Game</button>
+			<div class="ai-buttons">
+				<h3>AI Modes</h3>
+				<button id="ai-easy">AI Easy</button>
+				<button id="ai-medium">AI Medium</button>
+				<button id="ai-hard">AI Hard</button>
+			</div>
 		</div>
 
 		<!-- Dynamic status indicator (e.g., "You Won!" / "Game Over") -->
@@ -107,127 +112,18 @@ Creation Date: September 08, 2025
 		</div>
 
 		<!-- Game grid will be generated here by game.js -->
-		<div class="minesweeper-grid" id="minesweeper-grid"></div>
+		<div id="minesweeper-grid" class="minesweeper-grid"></div>
 		<script type="module" src="game/game.js"></script>
 	</div>
 
 	<!-- Inline JavaScript for draggable images and status updates -->
-	<script>
-		// Makes the background images draggable by the user
-		document.querySelectorAll('.draggable').forEach(img => {
-			let offsetX, offsetY, isDragging = false;
-
-			// Mouse down -> starts dragging
-			img.addEventListener('mousedown', e => {
-				isDragging = true;
-				offsetX = e.clientX - img.offsetLeft;
-				offsetY = e.clientY - img.offsetTop;
-				img.style.cursor = 'grabbing';
-			});
-
-			// Mouse move -> updates the image position
-			document.addEventListener('mousemove', e => {
-				if (isDragging) {
-					img.style.left = (e.clientX - offsetX) + 'px';
-					img.style.top = (e.clientY - offsetY) + 'px';
-				}
-			});
-
-			// Mouse up -> stops dragging
-			document.addEventListener('mouseup', () => {
-				isDragging = false;
-				img.style.cursor = 'grab';
-			});
-		});
-
-		/**
-		 * setStatus
-		 * Updates the status message displayed to the player.
-		 * @param {string} message - Message to display.
-		 * @param {string} statusClass - CSS class for styling (e.g., win/lose).
-		 */
-		function setStatus(message, statusClass) {
-			const indicator = document.getElementById("status-indicator"); // Status indicator element
-			indicator.textContent = message; // Update message
-			indicator.className = "status-indicator " + statusClass; // Update class for styling
-		}
-
-		const audioElement = document.getElementById('minesweeper-audio'); // Audio element
-		const trackSelect = document.getElementById('audio-track'); // Track selection dropdown
-
-		// Available audio tracks
-		const audioTracks = {
-			classic: 'audio/classic.mp3',
-			rap: 'audio/rap.mp3'
-		};
-		let audioUnlocked = false;
-
-		/**
-		 * setAudioTrack
-		 * Changes the audio track and optionally starts playback.
-		 * @param {string} trackKey - Key of the selected track.
-		 * @param {boolean} shouldAutoplay - Whether to autoplay after setting.
-		 */
-		function setAudioTrack(trackKey, shouldAutoplay) {
-			if (!audioElement) return; // exit if no audio element is present
-			const nextSrc = audioTracks[trackKey];
-			if (!nextSrc) return; // exit if invalid track key
-
-			// Change source if it differs from the current
-			if (audioElement.getAttribute('src') !== nextSrc) {
-				audioElement.src = nextSrc;
-				audioElement.load();
-			}
-
-			// Autoplay if allowed
-			if (shouldAutoplay && audioUnlocked) {
-				const playPromise = audioElement.play();
-				if (playPromise) {
-					playPromise.catch(() => {
-						// Ignore autoplay errors, browser will retry after next interaction.
-					});
-				}
-			}
-		}
-
-		// Event listener for track selection changes
-		if (trackSelect) {
-			trackSelect.addEventListener('change', (event) => { // listens for changes in the dropdown selection
-				setAudioTrack(event.target.value, true); // change track and autoplay
-			});
-			setAudioTrack(trackSelect.value, false); // set initial track without autoplay
-		}
-
-		/**
-		 * enableAudioAutoplay
-		 * Ensures audio starts only after the first user interaction
-		 * (browser restriction workaround).
-		 */
-		function enableAudioAutoplay() {
-			if (!audioElement) return;
-			audioUnlocked = true;
-			const playPromise = audioElement.play();
-			if (playPromise) {
-				playPromise.catch(() => {
-					// Ignore autoplay errors, browser will retry after next interaction.
-				});
-			}
-		}
-
-		// Listen for the first user interaction to enable audio autoplay
-		document.addEventListener('click', function handleFirstInteraction() {
-			enableAudioAutoplay();
-			document.removeEventListener('click', handleFirstInteraction);
-		}, { once: true });
-	</script>
-
-
+	<script src="game/draggable.js"></script>
+	<script src="game/ai.js"></script>
 </body>
 
 <!-- Course footer-->
 <footer>
 	<p style="text-align: center;">EECS 581 - Fall 2025 - University of Kansas</p>
-
 </footer>
 
 </html>
