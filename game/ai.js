@@ -114,16 +114,107 @@ function selectEasyCell(availableCells) {
     return availableCells[Math.floor(Math.random() * availableCells.length)];
 }
 
+
 function selectMediumCell(availableCells) {
     // TODO: replace with the random logic with medium logic 
     if (availableCells.length === 0) return null;
-    return availableCells[Math.floor(Math.random() * availableCells.length)];
+
+    const grid = document.getElementById("minesweeper-grid");
+    const revealed = grid.querySelectorAll("button:disabled");
+
+    // Step 1: Apply rules for safe picks
+    for (let btn of revealed) {
+        const value = parseInt(btn.textContent);
+        if (isNaN(value) || value === 0) continue;
+
+        const matches = btn.id.match(/cell-(\d+)-(\d+)/);
+        if (!matches) continue;
+        const x = parseInt(matches[1]);
+        const y = parseInt(matches[2]);
+
+        const neighbors = [];
+        for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+                if (dx === 0 && dy === 0) continue;
+                const n = document.getElementById(`cell-${x + dx}-${y + dy}`);
+                if (n) neighbors.push(n);
+            }
+        }
+
+        const hiddenNeighbors = neighbors.filter(n => n.textContent === "⬛" && n.dataset.flagged !== "true");
+        const flaggedNeighbors = neighbors.filter(n => n.dataset.flagged === "true");
+
+        // Rule 1: Flag bombs internally
+        if (hiddenNeighbors.length > 0 && hiddenNeighbors.length === value - flaggedNeighbors.length) {
+            hiddenNeighbors.forEach(hn => hn.dataset.flagged = "true");
+        }
+
+        // Rule 2: Open safe cells
+        if (flaggedNeighbors.length === value && hiddenNeighbors.length > 0) {
+            return { element: hiddenNeighbors[0], x, y }; // guaranteed safe
+        }
+    }
+
+    // Step 2: Fallback random pick (bomb or safe)
+    const hiddenCells = availableCells.filter(c => c.element.textContent === "⬛");
+    if (hiddenCells.length === 0) return null;
+
+    return hiddenCells[Math.floor(Math.random() * hiddenCells.length)];
 }
 
 function selectHardCell(availableCells) {
     // TODO: select a non bomb from the game state, never pick a bomb. 
     if (availableCells.length === 0) return null;
-    return availableCells[Math.floor(Math.random() * availableCells.length)];
+
+    // Step 1: Apply Medium rules first
+    const mediumPick = selectMediumCell(availableCells);
+    if (mediumPick) return mediumPick;
+
+    const grid = document.getElementById("minesweeper-grid");
+    const revealed = grid.querySelectorAll("button:disabled");
+
+    // Step 2: Apply 1-2-1 pattern rule
+    for (let btn of revealed) {
+        const value = parseInt(btn.textContent);
+        if (isNaN(value)) continue;
+
+        const matches = btn.id.match(/cell-(\d+)-(\d+)/);
+        if (!matches) continue;
+        const x = parseInt(matches[1]);
+        const y = parseInt(matches[2]);
+
+        // Horizontal 1-2-1
+        const left = document.getElementById(`cell-${x-1}-${y}`);
+        const right = document.getElementById(`cell-${x+1}-${y}`);
+        if (left && right && left.textContent === "1" && btn.textContent === "2" && right.textContent === "1") {
+            const outerLeft = document.getElementById(`cell-${x-2}-${y}`);
+            const outerRight = document.getElementById(`cell-${x+2}-${y}`);
+            const middle = document.getElementById(`cell-${x}-${y}`);
+
+            if (outerLeft && outerLeft.textContent === "⬛") outerLeft.dataset.flagged = "true";
+            if (outerRight && outerRight.textContent === "⬛") outerRight.dataset.flagged = "true";
+            if (middle && middle.textContent === "⬛") return { element: middle, x, y }; // safe pick
+        }
+
+        // Vertical 1-2-1
+        const up = document.getElementById(`cell-${x}-${y-1}`);
+        const down = document.getElementById(`cell-${x}-${y+1}`);
+        if (up && down && up.textContent === "1" && btn.textContent === "2" && down.textContent === "1") {
+            const outerUp = document.getElementById(`cell-${x}-${y-2}`);
+            const outerDown = document.getElementById(`cell-${x}-${y+2}`);
+            const middle = document.getElementById(`cell-${x}-${y}`);
+
+            if (outerUp && outerUp.textContent === "⬛") outerUp.dataset.flagged = "true";
+            if (outerDown && outerDown.textContent === "⬛") outerDown.dataset.flagged = "true";
+            if (middle && middle.textContent === "⬛") return { element: middle, x, y }; // safe pick
+        }
+    }
+
+    // Step 3: Fallback random pick (bomb or safe)
+    const hiddenCells = availableCells.filter(c => c.element.textContent === "⬛");
+    if (hiddenCells.length === 0) return null;
+
+    return hiddenCells[Math.floor(Math.random() * hiddenCells.length)];
 }
 
 function endPlayerTurn() {
