@@ -61,7 +61,7 @@ Creation Date: September 08, 2025
 		<img src="images/samsmith.jpg" alt="sam smith" class="draggable"
 			style="width:150px; top:400px; left:200px;">
 		<img src="images/tubby.jpeg" alt="tomater" class="draggable" style="width:100px; top:400px; left:1200px;">
-		<img src="images/frankOcean.jpg" alt="frank ocean" class="draggable" style="width:120px; top:200px; left:800px;">
+		<img src="images/frankOcean.jpg" alt="frank ocean" class="draggable" style="width:120px; top:200px; left:1400px;">
 	</div>
 
 
@@ -114,7 +114,38 @@ Creation Date: September 08, 2025
 		</div>
 
 		<!-- Game grid will be generated here by game.js -->
-		<div id="minesweeper-grid" class="minesweeper-grid"></div>
+		<div class="grid-container">
+			<table class="grid-table">
+				<tr>
+					<td class="corner-cell"></td>
+					<td class="column-label">A</td>
+					<td class="column-label">B</td>
+					<td class="column-label">C</td>
+					<td class="column-label">D</td>
+					<td class="column-label">E</td>
+					<td class="column-label">F</td>
+					<td class="column-label">G</td>
+					<td class="column-label">H</td>
+					<td class="column-label">I</td>
+					<td class="column-label">J</td>
+				</tr>
+				<tr>
+					<td class="row-label">1</td>
+					<td colspan="10" rowspan="10">
+						<div id="minesweeper-grid" class="minesweeper-grid"></div>
+					</td>
+				</tr>
+				<tr><td class="row-label">2</td></tr>
+				<tr><td class="row-label">3</td></tr>
+				<tr><td class="row-label">4</td></tr>
+				<tr><td class="row-label">5</td></tr>
+				<tr><td class="row-label">6</td></tr>
+				<tr><td class="row-label">7</td></tr>
+				<tr><td class="row-label">8</td></tr>
+				<tr><td class="row-label">9</td></tr>
+				<tr><td class="row-label">10</td></tr>
+			</table>
+		</div>
 		<script type="module" src="game/game.js"></script>
 	</div>
 

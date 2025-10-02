@@ -109,12 +109,55 @@ body {
 
 
 /* ---------------- Minesweeper Grid ---------------- */
+/* Container for grid with labels */
+.grid-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Table structure for grid with labels */
+.grid-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Label styling */
+.column-label, .row-label {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    padding: 0;
+    margin: 0;
+}
+
+.column-label {
+    width: 58px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.row-label {
+    width: 30px;
+    height: 58px;
+    vertical-align: middle;
+}
+
+.corner-cell {
+    width: 30px;
+    height: 30px;
+}
+
 /* Grid layout for game tiles */
 .minesweeper-grid {
     display: grid;
-    grid-template-columns: repeat(8, 58px); /* 8 columns, fixed width */
-    grid-template-rows: repeat(8, 58px); /* 8 rows, fixed height */
-    justify-content: center; /* center horizontally */
+    grid-template-columns: repeat(10, 58px); /* 10 columns, fixed width */
+    grid-template-rows: repeat(10, 58px); /* 10 rows, fixed height */
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 
 /* Individual grid buttons */
