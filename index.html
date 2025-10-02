@@ -41,7 +41,7 @@ Creation Date: September 08, 2025
 
 <body>
 	<!-- Background audio -->
-	<audio id="minesweeper-audio" src="audio/classic.mp3" autoplay loop></audio>
+	<audio id="minesweeper-audio" src="audio/lilnasX.mp3" autoplay loop></audio>
 
 	<!-- Overlay and popup -->
 	<div id="popupOverlay"></div>
@@ -69,7 +69,6 @@ Creation Date: September 08, 2025
 	<div class="content">
 		<!-- Game settings form-->
 		<div class="settings">
-			<h2>Game Settings</h2>
 			<label>
 				<!-- width -->
 				Width:
@@ -90,9 +89,11 @@ Creation Date: September 08, 2025
 				<h3>Music</h3>
 				<label for="audio-track">Track:</label>
 				<select id="audio-track">
-					<option value="classic" selected>Classic</option>
+					<option value="lilnasX" selected>Lil</option>
+					<option value="classic">Classic</option>
 					<option value="rap">Rap</option>
 				</select>
+				<button id="play-audio" style="margin-left: 10px; background-color: black; color: white; border: 1px solid white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">▶ Play</button>
 			</div>
 			<button id="start-game">Start Game</button>
 			<div class="ai-buttons">
@@ -120,6 +121,50 @@ Creation Date: September 08, 2025
 	<!-- Inline JavaScript for draggable images and status updates -->
 	<script src="game/draggable.js"></script>
 	<script src="game/ai.js"></script>
+	
+	<!-- Audio track handling -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const audioTrack = document.getElementById('audio-track');
+			const audio = document.getElementById('minesweeper-audio');
+			const playButton = document.getElementById('play-audio');
+			
+			// Play button functionality
+			playButton.addEventListener('click', function() {
+				audio.play().then(function() {
+					playButton.textContent = '⏸ Pause';
+					playButton.onclick = function() {
+						audio.pause();
+						playButton.textContent = '▶ Play';
+						playButton.onclick = arguments.callee;
+					};
+				}).catch(function(error) {
+					console.log('Audio play failed:', error);
+					alert('Audio could not play. Try clicking the play button.');
+				});
+			});
+			
+			// Try to play audio on user interaction
+			function tryPlayAudio() {
+				audio.play().catch(function(error) {
+					console.log('Audio autoplay prevented:', error);
+				});
+			}
+			
+			// Try to play when user clicks anywhere
+			document.addEventListener('click', tryPlayAudio, { once: true });
+			document.addEventListener('keydown', tryPlayAudio, { once: true });
+			
+			audioTrack.addEventListener('change', function() {
+				const selectedTrack = this.value;
+				audio.src = `audio/${selectedTrack}.mp3`;
+				audio.load();
+				audio.play().catch(function(error) {
+					console.log('Audio play failed:', error);
+				});
+			});
+		});
+	</script>
 </body>
 
 <!-- Course footer-->

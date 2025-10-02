@@ -36,7 +36,8 @@ Creation Date: 2025-09-08
 /* Popup text elements inherit background color */
 #popupContainer h2, 
 #popupContainer p {
-    background-color: white;
+    background-color: black;
+    color: white;
 }
   
   /* Popup box */
@@ -45,10 +46,11 @@ Creation Date: 2025-09-08
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* Center horizontally and vertically */
-    background: white;
+    background: black;
+    color: white;
     padding: 20px;
     border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
     display: none; /* hidden by default */
     z-index: 1000;
   }
@@ -81,6 +83,7 @@ body {
   flex-direction: column;    /* stack elements */
   overflow: auto;
   text-align: center;
+  padding-top: 80px; /* Increased to push content down more */
   background: linear-gradient(45deg, 
     #ff0000, #ff7f00, #ffff00, #00ff00, 
     #0000ff, #4b0082, #9400d3, #ff1493, 
@@ -104,6 +107,7 @@ body {
   align-items: center;
 }
 
+
 /* ---------------- Minesweeper Grid ---------------- */
 /* Grid layout for game tiles */
 .minesweeper-grid {
@@ -120,7 +124,8 @@ body {
     font-size: 25px;
     font-weight: bold;
     border: 2px solid black;
-    background-color: white;
+    background-color: black;
+    color: white;
     cursor: pointer;
 }
 
@@ -144,6 +149,8 @@ body {
     text-align: center;
     border: none;
     font-weight: bold;
+    background-color: black;
+    color: white;
 }
 
 .flag-counter-container p {
@@ -168,7 +175,9 @@ body {
 .audio-settings select {
     padding: 4px 8px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid white;
+    background-color: black;
+    color: white;
 }
 
 /* ---------------- Background Images ---------------- */
@@ -198,13 +207,54 @@ body {
 
 /* Color changes based on game status */
 .status-indicator.playing {
-  color: black;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .status-indicator.won {
-  color: green;
+  color: #00ff00;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .status-indicator.lost {
-  color: red;
+  color: #ff4444;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+/* ---------------- Settings Buttons ---------------- */
+.settings button {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.settings button:hover {
+  background-color: #333;
+}
+
+.ai-buttons button {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 3px;
+}
+
+.ai-buttons button:hover {
+  background-color: #333;
+}
+
+.settings input[type="number"] {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  padding: 5px;
+  border-radius: 4px;
+  margin-left: 10px;
 }
