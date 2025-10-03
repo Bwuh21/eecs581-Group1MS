@@ -83,7 +83,7 @@ body {
   flex-direction: column;    /* stack elements */
   overflow: auto;
   text-align: center;
-  padding-top: 80px; /* Increased to push content down more */
+  padding-top: 20px; /* slight spacing from top */
   background: linear-gradient(45deg, 
     #ff0000, #ff7f00, #ffff00, #00ff00, 
     #0000ff, #4b0082, #9400d3, #ff1493, 
@@ -91,6 +91,29 @@ body {
     #0000ff, #4b0082, #9400d3, #ff1493);
   background-size: 400% 400%;
   animation: rainbow 8s ease infinite;
+}
+/* ---------------- Timer Bar ---------------- */
+.timer-bar {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  left: auto;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  border: 2px solid #fff;
+  border-radius: 8px;
+}
+
+.timer-bar #game-timer {
+  font-size: 26px;
+  font-weight: bold;
 }
 
 /* Rainbow animation */

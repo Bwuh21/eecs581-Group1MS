@@ -55,6 +55,19 @@
 /* Import Map class for internal board logic */
 import { Map } from "./map.js"; // Imported Map CLASS
 
+// --- SFX helper ---
+function playSfx(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+        el.currentTime = 0;
+        el.volume = 1.0;
+        el.play().catch(() => {});
+    } catch (_) {
+        // ignore
+    }
+}
+
 // --- Popup logic ---
 // Handles showing the welcome popup on page load and closing it
 window.onload = function () {
@@ -86,10 +99,72 @@ class Game {
 		this.bombs = 0; // total bombs in current game
 		this.flags = 0; // flags remaining
 
+		// Timer state
+		this._timerIntervalId = null;
+		this._timerStartMs = 0;
+
 		// Set up create map button
 		document.getElementById("start-game").addEventListener("click", () => {
 			this.createMap();
 		});
+
+		// Dynamically constrain bomb count based on grid size
+		const gridWidth = document.getElementById("grid-width");
+		const gridHeight = document.getElementById("grid-height");
+		[gridWidth, gridHeight].forEach((el) => {
+			if (el) {
+				el.addEventListener("input", () => {
+					this.updateBombMax();
+					this.updateBombSettingFromInputs();
+				});
+			}
+		});
+
+		// Sync bombs with the flag counter input pre-game
+		const bombCount = document.getElementById("bomb-count");
+		const flagCounterInput = document.getElementById("flag-counter");
+		if (flagCounterInput) {
+			flagCounterInput.addEventListener("input", () => {
+				if (this.started) {
+					// During game, keep it as a display (revert to current flags)
+					flagCounterInput.value = String(this.flags);
+					return;
+				}
+				const val = parseInt(flagCounterInput.value, 10) || 1;
+				if (bombCount) bombCount.value = String(val);
+				this.updateBombSettingFromInputs();
+			});
+		}
+		if (bombCount) {
+			bombCount.addEventListener("input", () => {
+				if (this.started) return;
+				const val = parseInt(bombCount.value, 10) || 1;
+				if (flagCounterInput) flagCounterInput.value = String(val);
+				this.updateBombSettingFromInputs();
+			});
+		}
+	}
+
+	/**
+	 * Update internal bomb/flag settings from inputs while pre-game.
+	 * Clamps to valid range based on current grid size.
+	 */
+	updateBombSettingFromInputs() {
+		if (this.started) return;
+		const gridWidth = document.getElementById("grid-width");
+		const gridHeight = document.getElementById("grid-height");
+		const bombCount = document.getElementById("bomb-count");
+		const flagCounterInput = document.getElementById("flag-counter");
+		if (!gridWidth || !gridHeight || !bombCount) return;
+
+		const w = parseInt(gridWidth.value, 10) || 10;
+		const h = parseInt(gridHeight.value, 10) || 10;
+		const maxBombs = Math.max(1, w * h - 9);
+		let b = parseInt(bombCount.value, 10) || 1;
+		b = Math.min(Math.max(1, b), maxBombs);
+		this.bombs = b;
+		this.flags = b;
+		if (flagCounterInput) flagCounterInput.value = String(this.flags);
 	}
 
 	/*
@@ -100,22 +175,32 @@ class Game {
 		this.dead = false;
 		setStatus("", ""); // clear status
 
+		// Normalize inputs to integers
+		const w = parseInt(width, 10) || 10;
+		const h = parseInt(height, 10) || 10;
+		let b = parseInt(bombs, 10) || 10;
+
+		// Update bomb max based on size and clamp provided bombs
+		const maxBombs = Math.max(1, w * h - 9);
+		b = Math.min(Math.max(1, b), maxBombs);
+		this.updateBombMax(w, h);
+
 		// Set game parameters
-		this.bombs = bombs;
+		this.bombs = b;
 		this.flags = this.bombs;
 
 		// Create map object
-		this.map = new Map(width, height, this);
+		this.map = new Map(w, h, this);
 
 		// Set up html grid
 		const grid = document.getElementById("minesweeper-grid");
 		grid.innerHTML = "";
-		grid.style.gridTemplateColumns = `repeat(${width}, 58px)`;
-		grid.style.gridTemplateRows = `repeat(${height}, 58px)`;
+		grid.style.gridTemplateColumns = `repeat(${w}, 58px)`;
+		grid.style.gridTemplateRows = `repeat(${h}, 58px)`;
 
 		// Create buttons for each cell in grid
-		for (let y = 0; y < height; y++) {
-			for (let x = 0; x < width; x++) {
+		for (let y = 0; y < h; y++) {
+			for (let x = 0; x < w; x++) {
 				// Create buttons
 				const btn = document.createElement("button");
 				btn.className = "grid-btn";
@@ -123,6 +208,10 @@ class Game {
 
 				// left-click reveals cell
 				btn.addEventListener("click", () => {
+					// Play mouse SFX only for human clicks (not AI programmatic click)
+					if (typeof currentTurn === 'undefined' || currentTurn === "player") {
+						playSfx("sfx-mouse");
+					}
 					this.map.cellClicked(x, y);
 				});
 
@@ -137,6 +226,17 @@ class Game {
 
 		this.map.updateMap(); // update map display
 		this.updateFlagCounter(); // update flag counter display
+
+		// Prepare flag counter input for pre-game editing
+		const flagCounterInput = document.getElementById("flag-counter");
+		if (flagCounterInput) {
+			flagCounterInput.disabled = false;
+			flagCounterInput.value = String(this.bombs);
+		}
+
+		// Reset and show timer at 00:00
+		this.stopTimer();
+		this._setTimerDisplay(0);
 	}
 
 	/**
@@ -157,6 +257,19 @@ class Game {
 	 * @param {number} startY - Y-coordinate of first click
 	 */
 	start(startX, startY) {
+		// Ensure bombs reflect latest inputs at first click (works for AI/normal)
+		if (!this.started) {
+			const gridWidth = document.getElementById("grid-width");
+			const gridHeight = document.getElementById("grid-height");
+			const bombCount = document.getElementById("bomb-count");
+			if (gridWidth && gridHeight && bombCount) {
+				const w = parseInt(gridWidth.value, 10) || 10;
+				const h = parseInt(gridHeight.value, 10) || 10;
+				const maxBombs = Math.max(1, w * h - 9);
+				let b = parseInt(bombCount.value, 10) || this.bombs || 10;
+				this.bombs = Math.min(Math.max(1, b), maxBombs);
+			}
+		}
 		this.started = true;
 		this.flags = this.bombs;
 
@@ -165,10 +278,33 @@ class Game {
 		this.map.updateMap();
 
 		setStatus("Game in progress...", "playing");
+
+		// Start timer on first reveal
+		this.startTimer();
+
+		// Disable flag counter while playing and reflect flags remaining
+		const flagCounterInput = document.getElementById("flag-counter");
+		if (flagCounterInput) {
+			flagCounterInput.disabled = true;
+			flagCounterInput.value = String(this.flags);
+		}
 	}
 
 	finish(result) {
 		this.started = false;
+		this.stopTimer();
+
+		// Play result SFX
+		if (result === "win") {
+			playSfx("sfx-win");
+		}
+		// Fallback: if losing and bomb SFX didn't already play, try once here
+		if (result === "lose") {
+			try {
+				const bomb = document.getElementById('sfx-bomb');
+				if (bomb && bomb.paused) { bomb.currentTime = 0; bomb.play().catch(()=>{}); }
+			} catch(_) {}
+		}
 
 		// Reset AI state when game ends
 		if (typeof window.currentTurn !== 'undefined') {
@@ -198,6 +334,52 @@ class Game {
 		} else {
 			setStatus("Game over! Click 'Start Game' to play again.", "lost");
 		}
+	}
+
+	/**
+	 * Update the max/min constraints for the bomb input based on grid size.
+	 * If explicit w/h are not provided, read current input values.
+	 */
+	updateBombMax(w, h) {
+		const gridWidth = document.getElementById("grid-width");
+		const gridHeight = document.getElementById("grid-height");
+		const bombCount = document.getElementById("bomb-count");
+		if (!gridWidth || !gridHeight || !bombCount) return;
+
+		const widthVal = parseInt(w ?? gridWidth.value, 10) || 0;
+		const heightVal = parseInt(h ?? gridHeight.value, 10) || 0;
+		const maxBombs = Math.max(1, widthVal * heightVal - 9);
+		bombCount.min = 1;
+		bombCount.max = String(maxBombs);
+		const current = parseInt(bombCount.value, 10) || 1;
+		if (current > maxBombs) bombCount.value = String(maxBombs);
+		if (current < 1) bombCount.value = "1";
+	}
+
+	// ---------- Timer functions ----------
+	startTimer() {
+		this.stopTimer();
+		this._timerStartMs = Date.now();
+		this._setTimerDisplay(0);
+		this._timerIntervalId = setInterval(() => {
+			const elapsedSec = Math.floor((Date.now() - this._timerStartMs) / 1000);
+			this._setTimerDisplay(elapsedSec);
+		}, 1000);
+	}
+
+	stopTimer() {
+		if (this._timerIntervalId) {
+			clearInterval(this._timerIntervalId);
+			this._timerIntervalId = null;
+		}
+	}
+
+	_setTimerDisplay(seconds) {
+		const timerEl = document.getElementById("game-timer");
+		if (!timerEl) return;
+		const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+		const ss = String(seconds % 60).padStart(2, "0");
+		timerEl.textContent = `Time: ${mm}:${ss}`;
 	}
 
 	/**
@@ -235,7 +417,10 @@ class Game {
 	 */
 	updateFlagCounter() {
 		const flagCounter = document.getElementById("flag-counter");
-		flagCounter.value = this.flags;
+		if (!flagCounter) return;
+		if (this.started) {
+			flagCounter.value = this.flags;
+		}
 	}
 }
 

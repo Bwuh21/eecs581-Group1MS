@@ -35,13 +35,24 @@ Creation Date: September 08, 2025
 	<title>Minesweeper</title>
 
 	<!-- External stylesheet and favicon -->
-	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="styles.css?v=2">
 	<link rel="icon" type="image/png" href="/images/lil nas x.png">
 </head>
 
 <body>
+	<!-- Game Timer -->
+	<div id="timer-bar" class="timer-bar">
+		<span id="game-timer">Time: 00:00</span>
+	</div>
 	<!-- Background audio -->
 	<audio id="minesweeper-audio" src="audio/lilnasX.mp3" autoplay loop></audio>
+
+	<!-- SFX audio elements -->
+	<audio id="sfx-mouse" src="audio/mouse.mp3" preload="auto"></audio>
+	<audio id="sfx-bomb" src="audio/bomb.mp3" preload="auto"></audio>
+
+	<audio id="sfx-win" src="audio/win.mp3" preload="auto"></audio>
+	<audio id="sfx-lose" src="audio/lose.mp3" preload="auto"></audio>
 
 	<!-- Overlay and popup -->
 	<div id="popupOverlay"></div>
@@ -83,7 +94,7 @@ Creation Date: September 08, 2025
 			<label>
 				<!-- number of bombs-->
 				Mines:
-				<input type="number" id="bomb-count" value="10" min="10" max="20">
+				<input type="number" id="bomb-count" value="10" min="1" max="99">
 			</label>
 			<!-- Audio settings -->
 			<div class="audio-settings">
@@ -111,7 +122,7 @@ Creation Date: September 08, 2025
 		<!-- Flag counter display -->
 		<div class="flag-counter-container">
 			<p>⚑</p>
-			<input type="text" id="flag-counter" value="10" placeholder="Mines" readonly>
+			<input type="number" id="flag-counter" value="10" placeholder="Mines" min="1" max="99">
 		</div>
 
 		<!-- Game grid will be generated here by game.js -->
@@ -160,6 +171,8 @@ Creation Date: September 08, 2025
 			const audioTrack = document.getElementById('audio-track');
 			const audio = document.getElementById('minesweeper-audio');
 			const playButton = document.getElementById('play-audio');
+				// Lower background music so SFX are audible
+				if (audio) { audio.volume = 0.3; }
 			
 			// Play button functionality
 			playButton.addEventListener('click', function() {
@@ -176,12 +189,28 @@ Creation Date: September 08, 2025
 				});
 			});
 			
-			// Try to play audio on user interaction
-			function tryPlayAudio() {
-				audio.play().catch(function(error) {
-					console.log('Audio autoplay prevented:', error);
-				});
-			}
+				// Try to play audio on user interaction and prime SFX elements
+				function tryPlayAudio() {
+					if (audio) {
+						audio.play().catch(function(error) {
+							console.log('Audio autoplay prevented:', error);
+						});
+					}
+					// Prime SFX so subsequent play() calls are allowed and instant
+					['sfx-mouse','sfx-bomb','sfx-win','sfx-lose'].forEach(function(id){
+						var el = document.getElementById(id);
+						if (!el) return;
+						try {
+							var prevVol = el.volume;
+							el.volume = 0.0;
+							el.play().then(function(){
+								el.pause();
+								el.currentTime = 0;
+								el.volume = prevVol || 1.0;
+							}).catch(function(){ /* ignore */ });
+						} catch(e) { /* ignore */ }
+					});
+				}
 			
 			// Try to play when user clicks anywhere
 			document.addEventListener('click', tryPlayAudio, { once: true });

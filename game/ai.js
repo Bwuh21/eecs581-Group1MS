@@ -284,18 +284,36 @@ function startAIEasy() {
     aiMode = "easy";
     updateAIButtonStyles();
     setStatus("AI Easy mode selected", "playing");
+    const startBtn = document.getElementById("start-game");
+    if (startBtn) startBtn.click();
+    setTimeout(() => {
+        currentTurn = "ai";
+        aiMove();
+    }, 250);
 }
 
 function startAIMedium() {
     aiMode = "medium";
     updateAIButtonStyles();
     setStatus("AI Medium mode selected", "playing");
+    const startBtn = document.getElementById("start-game");
+    if (startBtn) startBtn.click();
+    setTimeout(() => {
+        currentTurn = "ai";
+        aiMove();
+    }, 250);
 }
 
 function startAIHard() {
     aiMode = "hard";
     updateAIButtonStyles();
     setStatus("AI Hard mode selected", "playing");
+    const startBtn = document.getElementById("start-game");
+    if (startBtn) startBtn.click();
+    setTimeout(() => {
+        currentTurn = "ai";
+        aiMove();
+    }, 250);
 }
 
 document.addEventListener("DOMContentLoaded", function () {

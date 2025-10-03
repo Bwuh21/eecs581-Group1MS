@@ -257,6 +257,11 @@ export class Map {
 		}
 		// If clicked on a bomb → lose
 		if (this.getCell(x, y, 1) === 1) {
+			// Play bomb SFX (rewind to ensure it plays)
+			try {
+				const s = document.getElementById('sfx-bomb');
+				if (s) { s.currentTime = 0; s.play().catch(()=>{}); }
+			} catch(_) {}
 			this.setCell(x, y, 3, 0);
 			this.game.finish("lose");
 			return false;
