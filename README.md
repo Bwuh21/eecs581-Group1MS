@@ -11,7 +11,7 @@
 
 A Minesweeper game implementation built with vanilla HTML, CSS, and JavaScript as part of a Software Engineering course project.
 
-https://alesan99.github.io/eecs581-minesweeper/  
+Playable Link (https://msproject2.vercel.app/)
 
 > **Project Status:** Complete 
 > This is an educational project for EECS 581 - Software Engineering 2.
