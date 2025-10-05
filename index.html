@@ -174,28 +174,31 @@ Creation Date: September 08, 2025
 				// Lower background music so SFX are audible
 				if (audio) { audio.volume = 0.3; }
 			
-			// Play button functionality
+			// Play/Pause toggle
 			playButton.addEventListener('click', function() {
-				audio.play().then(function() {
-					playButton.textContent = '⏸ Pause';
-					playButton.onclick = function() {
-						audio.pause();
-						playButton.textContent = '▶ Play';
-						playButton.onclick = arguments.callee;
-					};
-				}).catch(function(error) {
-					console.log('Audio play failed:', error);
-					alert('Audio could not play. Try clicking the play button.');
-				});
+				if (!audio) return;
+				if (audio.paused) {
+					audio.play().then(function() {
+						playButton.textContent = '⏸ Pause';
+					}).catch(function(error) {
+						console.log('Audio play failed:', error);
+						alert('Audio could not play. Try clicking the play button.');
+					});
+				} else {
+					audio.pause();
+					playButton.textContent = '▶ Play';
+				}
 			});
 			
 				// Try to play audio on user interaction and prime SFX elements
 				function tryPlayAudio() {
-					if (audio) {
-						audio.play().catch(function(error) {
-							console.log('Audio autoplay prevented:', error);
-						});
-					}
+				if (audio) {
+					audio.play().then(function(){
+						playButton.textContent = '⏸ Pause';
+					}).catch(function(error) {
+						console.log('Audio autoplay prevented:', error);
+					});
+				}
 					// Prime SFX so subsequent play() calls are allowed and instant
 					['sfx-mouse','sfx-bomb','sfx-win','sfx-lose'].forEach(function(id){
 						var el = document.getElementById(id);
@@ -220,7 +223,9 @@ Creation Date: September 08, 2025
 				const selectedTrack = this.value;
 				audio.src = `audio/${selectedTrack}.mp3`;
 				audio.load();
-				audio.play().catch(function(error) {
+				audio.play().then(function(){
+					playButton.textContent = '⏸ Pause';
+				}).catch(function(error) {
 					console.log('Audio play failed:', error);
 				});
 			});
