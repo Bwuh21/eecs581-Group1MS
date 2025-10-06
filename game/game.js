@@ -1,12 +1,12 @@
 /**
  * Author: Reem Fatima, Pashia Vang, Alejandro Sandoval, Liam Aga, Jorge Trujillo, Aiden Barnard
+ * Authors Part 2: Maren Proplesch, Muhammad Ibrahim, Zach Corbin, Saurav Renju, Nick Grieco, Muhammad Abdulla. 
  * Creation Date: 2025-09-08
  * File: game.js
  * Description: Frontend logic for Minesweeper-style game.
  * Inputs/Outputs:
  *   - Inputs: user clicks, popup button clicks, grid size and bomb count inputs
  *   - Outputs: HTML grid updates, flag counter updates, status messages
- * External Sources: Map class imported from ./map.js
  * Responsibilities:
  *   - Popup management, game initialization, grid rendering,
  *     user interaction, game state tracking, UI updates
@@ -82,6 +82,7 @@ window.onload = function () {
 	};
 };
 
+//define funcftion for updating the game state 
 function setStatus(message, className) {
 	const statusElement = document.getElementById("status-indicator");
 	statusElement.textContent = message;
