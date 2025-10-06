@@ -5,7 +5,8 @@
  * File: draggable.js
  * Description: Handles draggable stickers on the main screen.
  * Inputs/Outputs:
- *   - None
+ *   - Inputs: mouse drag events
+ *   - Outputs: Modified sticker locations
  * Responsibilities:
  *   - Handles draggable stickers on the main screen
  */
