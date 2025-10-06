@@ -57,6 +57,9 @@ Ibrahim: 10:00 – 11:00
 
 # Time Estimates vs Actual Time Spent (Feature Breakdown)
 
+Time estimates were made by determining both amount of free time we had available to collaborate and individually estimating the required time to complete a task.
+We used a less-formal version of planning poker to agree on time allocations, where we just verbally discussed the difficulty. 
+
 ## Project Overview
 This section outlines the estimated vs. actual hours spent implementing each major feature for Part 2. All times are in hours.
 

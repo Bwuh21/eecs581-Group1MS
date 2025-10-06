@@ -8,6 +8,7 @@
  *   - Outputs: updated game state
  * Responsibilities:
  *   - Maintain a game state tracking player and AI turns. Define 3 different AI cell selections modes. 
+ * Extra Sources: Limited code sections constructed using Claude AI for improved efficiency and programming language barriers. 
 
  */
 
@@ -36,6 +37,7 @@ function updateAIButtonStyles() {
         }
     });
     if (aiMode && buttons[aiMode]) {
+        //dynamic syntax partially sourced from Claude
         const selectedBtn = buttons[aiMode];
         switch (aiMode) {
             case "easy":
@@ -68,6 +70,7 @@ function setBoardThinking(isThinking) {
         grid.style.filter = "grayscale(70%)";
 
         let overlay = document.getElementById("ai-thinking-overlay");
+        //styling sourced from Claude AI. 
         if (!overlay) {
             overlay = document.createElement("div");
             overlay.id = "ai-thinking-overlay";
@@ -263,6 +266,7 @@ function aiMove() {
 
 function makeAIMove() {
     //determine which AI move to make, call the funtion, and update the game state
+    //dynamic syntax partially sourced from Claude
     clearPreviousAIHighlight();
     const availableCells = getAvailableCells();
     let selectedCell = null;
@@ -354,6 +358,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 setTimeout(() => {
     //configure the time between AI selection based on difficulty
+    //dynamic syntax partially sourced from Claude
     const buttons = [
         { id: "ai-easy", fn: startAIEasy },
         { id: "ai-medium", fn: startAIMedium },
