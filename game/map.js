@@ -1,5 +1,6 @@
 /**
  * Author: Reem Fatima, Pashia Vang, Alejandro Sandoval, Liam Aga, Jorge Trujillo, Aiden Barnard
+  * Authors Part 2: Maren Proplesch, Muhammad Ibrahim, Zach Corbin, Saurav Renju, Nick Grieco, Muhammad Abdulla. 
  * Creation Date: 2025-09-08
  * File: map.js
  * Description: Implements the backend board logic for a Minesweeper-style game.
