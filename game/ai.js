@@ -1,3 +1,16 @@
+/**
+ * Authors: Maren Proplesch, Muhammad Ibrahim, Zach Corbin, Saurav Renju, Nick Grieco, Muhammad Abdulla. 
+ * Creation Date: 2025-10-01
+ * File: ai.js
+ * Description: Handles AI mode and turn based logic.
+ * Inputs/Outputs:
+ *   - Inputs: game state
+ *   - Outputs: updated game state
+ * Responsibilities:
+ *   - Maintain a game state tracking player and AI turns. Define 3 different AI cell selections modes. 
+
+ */
+
 let currentTurn = "player";
 let aiMode = null;
 let aiThinking = false;
@@ -7,6 +20,7 @@ function playerCanMove() {
 }
 
 function updateAIButtonStyles() {
+    //create buttons and style them for selecting AI. 
     const buttons = {
         easy: document.getElementById("ai-easy"),
         medium: document.getElementById("ai-medium"),
@@ -44,6 +58,7 @@ function updateAIButtonStyles() {
 }
 
 function setBoardThinking(isThinking) {
+    //define styling and visuals for when the AI is *selecting* a new cell
     const grid = document.getElementById("minesweeper-grid");
     if (!grid) return;
 
@@ -90,6 +105,7 @@ function setBoardThinking(isThinking) {
 }
 
 function getAvailableCells() {
+    //gets available cells ready for AI mode
     const grid = document.getElementById("minesweeper-grid");
     const availableCells = [];
     const buttons = grid.querySelectorAll("button:not(:disabled)");
@@ -218,6 +234,7 @@ function selectHardCell(availableCells) {
 }
 
 function endPlayerTurn() {
+    //toggle status to AI mode
     if (!aiMode) return;
     if (currentTurn !== "player") return;
     currentTurn = "ai";
@@ -225,6 +242,7 @@ function endPlayerTurn() {
 }
 
 function aiMove() {
+    //setup visual effects of the AI move
     if (!aiMode || currentTurn !== "ai") return;
     aiThinking = true;
     setBoardThinking(true);
@@ -244,6 +262,7 @@ function aiMove() {
 }
 
 function makeAIMove() {
+    //determine which AI move to make, call the funtion, and update the game state
     clearPreviousAIHighlight();
     const availableCells = getAvailableCells();
     let selectedCell = null;
@@ -271,6 +290,7 @@ function makeAIMove() {
 }
 
 function clearPreviousAIHighlight() {
+    //highlight the previous cell selected by the AI for the player's convenience
     const previousAICells = document.querySelectorAll('[data-ai-selected="true"]');
     previousAICells.forEach(btn => {
         btn.style.backgroundColor = "";
@@ -281,6 +301,7 @@ function clearPreviousAIHighlight() {
 }
 
 function startAIEasy() {
+    //after easy mode is selected configure the buttons and game state
     aiMode = "easy";
     updateAIButtonStyles();
     setStatus("AI Easy mode selected", "playing");
@@ -293,6 +314,7 @@ function startAIEasy() {
 }
 
 function startAIMedium() {
+    //after medium mode is selected configure the buttons and game state
     aiMode = "medium";
     updateAIButtonStyles();
     setStatus("AI Medium mode selected", "playing");
@@ -305,6 +327,7 @@ function startAIMedium() {
 }
 
 function startAIHard() {
+    //after hard mode is selected configure the buttons and game state
     aiMode = "hard";
     updateAIButtonStyles();
     setStatus("AI Hard mode selected", "playing");
@@ -317,6 +340,7 @@ function startAIHard() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    //define buttons for selecfting AI difficulty
     const buttons = [
         { id: "ai-easy", fn: startAIEasy },
         { id: "ai-medium", fn: startAIMedium },
@@ -329,6 +353,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 setTimeout(() => {
+    //configure the time between AI selection based on difficulty
     const buttons = [
         { id: "ai-easy", fn: startAIEasy },
         { id: "ai-medium", fn: startAIMedium },
@@ -345,9 +370,11 @@ setTimeout(() => {
 }, 500);
 
 function setStatus(message, gameState) {
+    //get the status and set it to the new game state
     const statusElement = document.getElementById("game-status");
     if (statusElement) {
         statusElement.textContent = message;
         statusElement.className = `status-${gameState}`;
     }
+
 }
